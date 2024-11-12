@@ -1,0 +1,76 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|c:\\users\\limbe\\source\\repos\\monitoreohortalizasapp\\monitoreohortalizasapp\\source\\bedreadings\\pages\\bedreadings.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|solutionrelative:monitoreohortalizasapp\\source\\bedreadings\\pages\\bedreadings.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|c:\\users\\limbe\\source\\repos\\monitoreohortalizasapp\\monitoreohortalizasapp\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|solutionrelative:monitoreohortalizasapp\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|c:\\users\\limbe\\source\\repos\\monitoreohortalizasapp\\monitoreohortalizasapp\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|solutionrelative:monitoreohortalizasapp\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\App.xaml.cs",
+              "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\App.xaml.cs",
+              "ToolTip": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\App.xaml.cs",
+              "RelativeToolTip": "MonitoreoHortalizasApp\\App.xaml.cs",
+              "ViewState": "AQIAACYAAAAAAAAAAAAywDQAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-12T04:54:59.706Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\MainWindow.xaml.cs",
+              "RelativeToolTip": "MonitoreoHortalizasApp\\MainWindow.xaml.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-12T04:54:54.658Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BedReadings.razor",
+              "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Source\\BedReadings\\Pages\\BedReadings.razor",
+              "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\Source\\BedReadings\\Pages\\BedReadings.razor",
+              "ToolTip": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Source\\BedReadings\\Pages\\BedReadings.razor",
+              "RelativeToolTip": "MonitoreoHortalizasApp\\Source\\BedReadings\\Pages\\BedReadings.razor",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAIwBkAAAALAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-11-12T04:32:42.746Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

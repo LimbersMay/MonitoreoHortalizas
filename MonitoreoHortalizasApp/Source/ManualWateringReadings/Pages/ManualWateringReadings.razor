@@ -1,0 +1,23 @@
+﻿@page "/ManualWateringReadings"
+<TabHeader TableTitle="Lecturas del riego manual"/>
+
+<div class="container tables-container">
+    <div class="row">
+        <div class="col-sm">
+            <!-- Temperature table -->
+            <ValveTable @ref="ValveTable" Title="Riego manual" Valves="Valves"/>
+        </div>
+    </div>
+</div>
+
+<style>
+    html {
+        overflow: scroll;
+        overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0; /* Remove scrollbar space */
+        background: transparent; /* Optional: just make scrollbar invisible */
+    }
+</style>

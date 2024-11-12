@@ -1,0 +1,43 @@
+﻿@page "/readingBeds"
+
+<TabHeader TableTitle="Lectura de humedad de las camas" />
+
+<div class="container tables-container">
+    <div class="row">
+
+        <!-- Bed 1 -->
+        <div class="col-sm">
+            <BedTable @ref="BedTable1" BedHumidities="Beds1" TableTitle="Cama 1" />
+        </div>
+
+        <!-- Bed 2 -->
+        <div class="col-sm">
+            <BedTable @ref="BedTable2" BedHumidities="Beds2" TableTitle="Cama 2" />
+        </div>
+    </div>
+
+    <div class="row mt-4">
+
+        <!-- Bed 3 -->
+        <div class="col-sm">
+            <BedTable @ref="BedTable3" BedHumidities="Beds3" TableTitle="Cama 3" />
+        </div>
+
+        <!-- Bed 4 -->
+        <div class="col-sm">
+            <BedTable @ref="BedTable4" BedHumidities="Beds4" TableTitle="Cama 4" />
+        </div>
+    </div>
+</div>
+
+<style>
+    html {
+        overflow: scroll;
+        overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0; /* Remove scrollbar space */
+        background: transparent; /* Optional: just make scrollbar invisible */
+    }
+</style>

@@ -1,0 +1,41 @@
+﻿@using GestionHortalizasApp.entities
+<div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;">
+    @Title
+</div>
+
+<Grid
+    @ref="_grid"
+    TItem="Valve"
+    Class="table table-hover table-striped border"
+    Data="Valves"
+    Height="245"
+    FixedHeader="true"
+    AllowSorting="true"
+    Unit="Unit.Px"
+    Responsive="true">
+    <GridColumns>
+        <GridColumn
+            TItem="Valve"
+            HeaderText="Fecha"
+            PropertyName="SoloFecha"
+            SortKeySelector="item => item.SoloFecha"
+        >
+            @context.SoloFecha
+        </GridColumn>
+        <GridColumn TItem="Valve" HeaderText="Hora de inicio" PropertyName="HoraEncendido" SortKeySelector="item => item.HoraEncendido">
+            @context.HoraEncendido
+        </GridColumn>
+        <GridColumn TItem="Valve" HeaderText="Hora de apagado" PropertyName="HoraApagado" SortKeySelector="item => item.HoraApagado">
+            @context.HoraApagado
+        </GridColumn>
+        <GridColumn TItem="Valve" HeaderText="Duración" PropertyName="TiempoEncendido" SortKeySelector="item => item.TiempoEncendido">
+            @context.TiempoEncendido
+        </GridColumn>
+        <GridColumn TItem="Valve" HeaderText="Litros consumidos" PropertyName="Volumen" SortKeySelector="item => item.Volumen">
+            @context.Volumen L
+        </GridColumn>
+        <GridColumn TItem="Valve" HeaderText="Nombre de la cama" PropertyName="NombreSembrado" SortKeySelector="item => item.NombreSembrado">
+            @context.NombreSembrado
+        </GridColumn>
+    </GridColumns>
+</Grid>

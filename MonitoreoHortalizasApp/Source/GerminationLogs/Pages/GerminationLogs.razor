@@ -1,0 +1,203 @@
+﻿@page "/GerminationLogs"
+@using GestionHortalizasApp.entities
+
+<TabHeader TableTitle="Bitácora de germinación" />
+
+<div class="container tables-container">
+    <div class="row">
+        <div class="col-sm">
+            <!-- Add a new germination log -->
+            
+            <div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;">
+                Germinación de la cama 1
+            </div>
+
+            <Grid
+                @ref="_grid"
+                TItem="GerminationLog"
+                Class="table table-hover table-striped border"
+                Data="GerminationLogsReadings"
+                Height="245"
+                FixedHeader="true"
+                AllowSorting="true"
+                Unit="Unit.Px"
+                Responsive="true">
+                <GridColumns>
+                    <GridColumn
+                        TItem="GerminationLog"
+                        HeaderText="Fecha de registro"
+                        PropertyName="FechaRegistro"
+                        SortKeySelector="item => item.FechaRegistro">
+                        @context.FechaRegistro
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Nombre de la cama" PropertyName="NombreCama" SortKeySelector="item => item.NombreCama">
+                        @context.NombreCama
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Temperatura del ambiente" PropertyName="TemperaturaAmbiente" SortKeySelector="item => item.TemperaturaAmbiente">
+                        @context.TemperaturaAmbiente
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Humedad del ambiente" PropertyName="HumedadAmbiente" SortKeySelector="item => item.HumedadAmbiente">
+                        @context.HumedadAmbiente
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="# Zurcos germinados" PropertyName="NumeroZurcosGerminados" SortKeySelector="item => item.NumeroZurcosGerminados">
+                        @context.NumeroZurcosGerminados
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
+                        @context.BroteAlturaMaxima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
+                        @context.BroteAlturaMinima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="# Mortandad" PropertyName="NumeroMortandad" SortKeySelector="item => item.NumeroMortandad">
+                        @context.NumeroMortandad
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima hojas" PropertyName="HojasAlturaMaxima" SortKeySelector="item => item.HojasAlturaMaxima">
+                        @context.HojasAlturaMaxima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima hojas" PropertyName="HojasAlturaMinima" SortKeySelector="item => item.HojasAlturaMinima">
+                        @context.HojasAlturaMinima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Linea" PropertyName="Linea" SortKeySelector="item => item.Linea">
+                        @context.Linea
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Observaciones" PropertyName="Observaciones" SortKeySelector="item => item.Observaciones">
+                        @context.Observaciones
+                    </GridColumn>
+                </GridColumns>
+            </Grid>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm">
+            <div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;">
+                Germinación de la cama 2
+            </div>
+
+            <Grid
+                @ref="_grid"
+                TItem="GerminationLog"
+                Class="table table-hover table-striped border"
+                Data="GerminationLogsReadings"
+                Height="245"
+                FixedHeader="true"
+                AllowSorting="true"
+                Unit="Unit.Px"
+                Responsive="true">
+                <GridColumns>
+                    <GridColumn
+                        TItem="GerminationLog"
+                        HeaderText="Fecha de registro"
+                        PropertyName="FechaRegistro"
+                        SortKeySelector="item => item.FechaRegistro"
+                    >
+                        @context.FechaRegistro
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Nombre de la cama" PropertyName="NombreCama" SortKeySelector="item => item.NombreCama">
+                        @context.NombreCama
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Temperatura del ambiente" PropertyName="TemperaturaAmbiente" SortKeySelector="item => item.TemperaturaAmbiente">
+                        @context.TemperaturaAmbiente
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Humedad del ambiente" PropertyName="HumedadAmbiente" SortKeySelector="item => item.HumedadAmbiente">
+                        @context.HumedadAmbiente
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="# Zurcos germinados" PropertyName="NumeroZurcosGerminados" SortKeySelector="item => item.NumeroZurcosGerminados">
+                        @context.NumeroZurcosGerminados
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
+                        @context.BroteAlturaMaxima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
+                        @context.BroteAlturaMinima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="# Mortandad" PropertyName="NumeroMortandad" SortKeySelector="item => item.NumeroMortandad">
+                        @context.NumeroMortandad
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima hojas" PropertyName="HojasAlturaMaxima" SortKeySelector="item => item.HojasAlturaMaxima">
+                        @context.HojasAlturaMaxima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima hojas" PropertyName="HojasAlturaMinima" SortKeySelector="item => item.HojasAlturaMinima">
+                        @context.HojasAlturaMinima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Linea" PropertyName="Linea" SortKeySelector="item => item.Linea">
+                        @context.Linea
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Observaciones" PropertyName="Observaciones" SortKeySelector="item => item.Observaciones">
+                        @context.Observaciones
+                    </GridColumn>
+                </GridColumns>
+            </Grid>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm">
+            <div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;">
+                Germinación de la cama 3
+            </div>
+
+            <Grid
+                @ref="_grid"
+                TItem="GerminationLog"
+                Class="table table-hover table-striped border"
+                Data="GerminationLogsReadings"
+                Height="245"
+                FixedHeader="true"
+                AllowSorting="true"
+                Unit="Unit.Px"
+                Responsive="true">
+                <GridColumns>
+                    <GridColumn
+                        TItem="GerminationLog"
+                        HeaderText="Fecha de registro"
+                        PropertyName="FechaRegistro"
+                        SortKeySelector="item => item.FechaRegistro"
+                    >
+                        @context.FechaRegistro
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Nombre de la cama" PropertyName="NombreCama" SortKeySelector="item => item.NombreCama">
+                        @context.NombreCama
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Temperatura del ambiente" PropertyName="TemperaturaAmbiente" SortKeySelector="item => item.TemperaturaAmbiente">
+                        @context.TemperaturaAmbiente
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Humedad del ambiente" PropertyName="HumedadAmbiente" SortKeySelector="item => item.HumedadAmbiente">
+                        @context.HumedadAmbiente
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="# Zurcos germinados" PropertyName="NumeroZurcosGerminados" SortKeySelector="item => item.NumeroZurcosGerminados">
+                        @context.NumeroZurcosGerminados
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
+                        @context.BroteAlturaMaxima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
+                        @context.BroteAlturaMinima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="# Mortandad" PropertyName="NumeroMortandad" SortKeySelector="item => item.NumeroMortandad">
+                        @context.NumeroMortandad
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima hojas" PropertyName="HojasAlturaMaxima" SortKeySelector="item => item.HojasAlturaMaxima">
+                        @context.HojasAlturaMaxima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima hojas" PropertyName="HojasAlturaMinima" SortKeySelector="item => item.HojasAlturaMinima">
+                        @context.HojasAlturaMinima
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Linea" PropertyName="Linea" SortKeySelector="item => item.Linea">
+                        @context.Linea
+                    </GridColumn>
+                    <GridColumn TItem="GerminationLog" HeaderText="Observaciones" PropertyName="Observaciones" SortKeySelector="item => item.Observaciones">
+                        @context.Observaciones
+                    </GridColumn>
+                </GridColumns>
+            </Grid>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    Grid<GerminationLog> _grid = default!;
+    public List<GerminationLog> GerminationLogsReadings { get; set; } = new();
+}
+

@@ -1,0 +1,117 @@
+﻿@page "/"
+@using MonitoreoHortalizasApp.models
+
+<TabHeader TableTitle="Promedio de las lecturas del dia"/>
+
+<div class="container tables-container">
+    <div class="row">
+        <div class="col-sm">
+            <SummaryCard
+                Title="Cama 1 automático"
+                Value="@Bed1AverageHumidity"
+                LastRead="DateTime.Now"
+                Symbol="%"
+            />
+        </div>
+
+        <div class="col-sm">
+            <SummaryCard
+                Title="Cama 2 automático"
+                Value="@Bed2AverageHumidity"
+                LastRead="DateTime.Now"
+                Symbol="%"
+            />
+        </div>
+
+        <div class="col-sm">
+            <SummaryCard
+                Title="Cama 3 manual"
+                Value="@Bed3AverageHumidity"
+                LastRead="DateTime.Now"
+                Symbol="%"
+            />
+        </div>
+
+        <div class="col-sm">
+            <SummaryCard
+                Title="Cama 4 manual"
+                Value="@Bed4AverageHumidity"
+                LastRead="DateTime.Now"
+                Symbol="%"
+            />
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-sm">
+            <SummaryCard
+                Title="Consumo agua cama 1 automático"
+                Value="@Bed1WaterAmount"
+                Symbol="L"
+                LastRead="DateTime.Now"
+            />
+        </div>
+        
+        <div class="col-sm">
+            <SummaryCard
+                Title="Consumo agua cama 2 automático"
+                Value="17"
+                Symbol="L"
+                LastRead="DateTime.Now"
+            />
+        </div>
+
+        <div class="col-sm">
+            <SummaryCard
+                Title="Consumo agua cama 3 manual"
+                Value="13"
+                Symbol="L"
+                LastRead="DateTime.Now"
+            />
+        </div>
+
+        <div class="col-sm">
+            <SummaryCard
+                Title="Consumo agua cama 4 manual"
+                Value="30"
+                Symbol="L"
+                LastRead="DateTime.Now"
+            />
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <Grid
+            @ref="_grid"
+            TItem="ArduinoSerialLog"
+            Class="table table-hover table-borderless"
+            Data="ArduinoSerialLogs"
+            Height="245"
+            FixedHeader="true"
+            AllowSorting="false"
+            Unit="Unit.Px"
+            Responsive="true">
+            <GridColumns>
+                <GridColumn
+                    TItem="ArduinoSerialLog"
+                    HeaderText="Últimos Logs"
+                    PropertyName="SoloFecha"
+                >
+                    @context.Log
+                </GridColumn>
+            </GridColumns>
+        </Grid>
+    </div>
+</div>
+
+<style>
+    html {
+        overflow: scroll;
+        overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0; /* Remove scrollbar space */
+        background: transparent; /* Optional: just make scrollbar invisible */
+    }
+</style>

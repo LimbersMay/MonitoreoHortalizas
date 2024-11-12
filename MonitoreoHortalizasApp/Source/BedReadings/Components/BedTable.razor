@@ -1,0 +1,56 @@
+﻿@using GestionHortalizasApp.entities
+
+<div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;">
+    @TableTitle
+</div>
+
+<Grid
+    @ref="_grid"
+    TItem="BedHumidity"
+    Class="table table-hover table-striped border"
+    Data="BedHumidities"
+    Height="245"
+    FixedHeader="true"
+    AllowSorting="true"
+    Unit="Unit.Px"
+    Responsive="true">
+    <GridColumns>
+        <GridColumn
+            TItem="BedHumidity"
+            HeaderText="Fecha" 
+            Id="1"
+            PropertyName="SoloFecha" 
+            SortKeySelector="item => item.SoloFecha"
+            >
+            @context.SoloFecha
+        </GridColumn>
+        <GridColumn TItem="BedHumidity" HeaderText="Hora" PropertyName="SoloHora" SortKeySelector="item => item.SoloHora">
+            @context.SoloHora
+        </GridColumn>
+        <GridColumn TItem="BedHumidity" HeaderText="Humedad" PropertyName="Humedad" SortKeySelector="item => item.Humedad">
+            @context.Humedad
+            <!-- Percent -->
+            %
+        </GridColumn>
+    </GridColumns>
+</Grid>
+
+@code {
+    #nullable enable
+
+    [Parameter] public string TableTitle { get; set; } = "Cama";
+    [Parameter] public List<BedHumidity> BedHumidities { get; set; } = new();
+
+    Grid<BedHumidity> _grid = default!;
+
+    public async Task Refresh()
+    {
+        await _grid.RefreshDataAsync();
+    }
+    
+    public string GenerateId()
+    {
+        return Guid.NewGuid().ToString();
+    }
+}
+

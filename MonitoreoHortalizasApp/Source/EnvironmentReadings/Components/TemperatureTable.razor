@@ -1,0 +1,38 @@
+﻿@using GestionHortalizasApp.entities
+<!-- Temperature table -->
+
+<div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;">
+    Temperatura
+</div>
+
+<Grid
+    @ref="_grid"
+    TItem="Temperature"
+    Class="table table-hover table-striped border"
+    Data="Temperatures"
+    Height="245"
+    FixedHeader="true"
+    AllowSorting="true"
+    Unit="Unit.Px"
+    Responsive="true">
+    <GridColumns>
+        <GridColumn
+            TItem="Temperature"
+            HeaderText="Fecha"
+            PropertyName="SoloFecha"
+            SortKeySelector="item => item.SoloFecha">
+            @context.SoloFecha
+        </GridColumn>
+        <GridColumn TItem="Temperature" HeaderText="Hora" PropertyName="SoloHora" SortKeySelector="item => item.SoloHora">
+            @context.SoloHora
+        </GridColumn>
+        <GridColumn TItem="Temperature" HeaderText="Humedad" PropertyName="Humedad" SortKeySelector="item => item.Humedad">
+            @context.Humedad
+            %
+        </GridColumn>
+        <GridColumn TItem="Temperature" HeaderText="Temperatura" PropertyName="Temperatura" SortKeySelector="item => item.Temperatura">
+            @context.Temperatura
+            °C
+        </GridColumn>
+    </GridColumns>
+</Grid>

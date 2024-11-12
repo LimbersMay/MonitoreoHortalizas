@@ -1,0 +1,36 @@
+﻿@page "/environmentReadings"
+
+<TabHeader TableTitle="Lecturas del ambiente" />
+
+<div class="container tables-container">
+    <div class="row">
+        <!-- Barometric Pressure table -->
+        <div class="col-sm">
+            <BarometricPressureTable />
+        </div>
+
+        <!-- Temperature Pressure table -->
+        <div class="col-sm">
+            <TemperatureTable />
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Automatic watering table -->
+        <div class="col-sm">
+            <ValveTable @ref="ValveTable" Title="Riego automático" Valves="Valves" />
+        </div>
+    </div>
+</div>
+
+<style>
+    html {
+        overflow: scroll;
+        overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0; /* Remove scrollbar space */
+        background: transparent; /* Optional: just make scrollbar invisible */
+    }
+</style>

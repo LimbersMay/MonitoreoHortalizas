@@ -1,0 +1,144 @@
+﻿@using MonitoreoHortalizasApp.Events.Errors
+@using MonitoreoHortalizasApp.services
+@using MonitoreoHortalizasApp.services.Events
+@using Microsoft.Extensions.Logging
+
+<Toasts Class="p-3" Messages="Messages" AutoHide="true" Delay="3000" Placement="ToastsPlacement.TopRight"></Toasts>
+
+<div class="text-center p-3 rounded mb-2 d-flex flex-row justify-content-around align-items-center">
+    <h2 class="mb-0">@TableTitle</h2>
+
+    <!-- Connect to serial port div -->
+    <div class="d-flex flex-column align-items-end">
+        <!-- Connect to serial port 1 -->
+        <div class="d-flex flex-row align-items-center justify-content-end mb-1">
+            <label for="selectPort1" class="form-label mb-0 me-2" style="min-width: 150px;">Puerto COM Principal:</label>
+            <select class="form-select w-auto" id="selectPort1" disabled="@TabHeaderService.IsMainSerialPortSelected" @bind="MainSerialPortSelected">
+                <option selected>
+                    @if(TabHeaderService.IsMainSerialPortSelected)
+                    {
+                        @TabHeaderService.MainSerialPortName
+                    }
+                    else
+                    {
+                        @("Seleccionar puerto")
+                    }
+                </option>
+                @foreach (var port in _ports)
+                {
+                    <option>@port</option>
+                }
+            </select>
+            <button class="btn btn-primary ms-2" disabled="@TabHeaderService.IsMainSerialPortSelected" @onclick="@ConnectMainSerialPort">Conectar</button>
+        </div>
+
+        <!-- Connect to serial port 2 -->
+        <div class="d-flex flex-row align-items-center justify-content-end mb-1">
+            <label for="selectPort2" class="form-label mb-0 me-2" style="min-width: 150px;">Puerto COM manual:</label>
+            <select 
+                class="form-select w-auto" id="selectPort2" 
+                disabled="@TabHeaderService.IsManualSerialPortSelected"
+                @bind="ManualSerialPortSelected"
+                >
+                    <option selected>
+                        @if (TabHeaderService.IsManualSerialPortSelected)
+                        {
+                            @TabHeaderService.ManualSerialPortName
+                        }
+                        else
+                        {
+                            @("Seleccionar puerto")
+                        }
+                    </option>
+                
+                @foreach (var port in _ports)
+                {
+                    <option>@port</option>
+                }
+            </select>
+            <button
+                class="btn btn-primary ms-2"
+                disabled="@TabHeaderService.IsManualSerialPortSelected"
+                @onclick="ConnectManualSerialPort"
+                >
+                Conectar
+            </button>
+        </div>
+    </div>
+</div>
+ 
+@code {
+    [Parameter, EditorRequired] public string TableTitle { get; set; } = "Cama";
+    
+    [Inject] protected ISerialPortReader SerialPortReader { get; set; } = default!;
+    [Inject] protected TabHeaderService TabHeaderService { get; set; } = default!;
+    [Inject] protected ILogger<Runner> Logger { get; set; } = default!;
+    [Inject] protected IEventAggregator EventAggregator { get; set; } = default!;
+    
+    // Toast messages
+    public List<ToastMessage> Messages { get; set; } = new();
+
+    private List<string> _ports = new();
+
+    private string MainSerialPortSelected { get; set; } = null;
+    private string ManualSerialPortSelected { get; set; } = null;
+    
+    // Toast methods
+    private void ShowMessage(ToastType toastType) => Messages.Add(CreateToastMessage(toastType));
+    
+    private ToastMessage CreateToastMessage(ToastType toastType) => new()
+    {
+        Type = toastType,
+        Title = "Puerto COM inválido",
+        Message = "Selecciona un puerto COM válido."
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _ports = SerialPortReader.GetAvailablePorts();
+    }
+
+    protected void ConnectMainSerialPort()
+    {
+        if (!_ports.Contains(MainSerialPortSelected))
+        {
+            ShowMessage(ToastType.Danger);
+            return;
+        }
+        
+        // Disable the main serial port select and set the selected port
+        TabHeaderService.IsMainSerialPortSelected = true;
+        TabHeaderService.MainSerialPortName = MainSerialPortSelected;
+        
+        // Trying connect to the selected serial port
+        try
+        {
+            /*
+             * This method will read the data from the selected serial port every time it receives data.
+             * When received data, an event will be triggered and the event aggregator will notify the subscribers.
+             * The subscribers will be the components that need to read the data from the serial port.
+             */
+            SerialPortReader.ReadFromPort(MainSerialPortSelected);
+        }
+        catch (UnauthorizedAccessException e)
+        {
+            var message = e.Message + "|" + "Es posible que el puerto seleccionado esté en uso";
+            
+            Logger.LogError(message);
+            EventAggregator.Publish(new ErrorOccurredEvent { ErrorMessage = message});
+        }
+    }
+
+    protected void ConnectManualSerialPort()
+    {
+        if (!_ports.Contains(ManualSerialPortSelected))
+        {
+            ShowMessage(ToastType.Danger);
+            return;
+        }
+        
+        TabHeaderService.IsManualSerialPortSelected = true;
+        TabHeaderService.ManualSerialPortName = ManualSerialPortSelected;
+    }
+}
