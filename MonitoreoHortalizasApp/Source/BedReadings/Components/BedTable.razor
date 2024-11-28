@@ -18,7 +18,6 @@
         <GridColumn
             TItem="BedHumidity"
             HeaderText="Fecha" 
-            Id="1"
             PropertyName="SoloFecha" 
             SortKeySelector="item => item.SoloFecha"
             >
@@ -46,11 +45,6 @@
     public async Task Refresh()
     {
         await _grid.RefreshDataAsync();
-    }
-    
-    public string GenerateId()
-    {
-        return Guid.NewGuid().ToString();
     }
 }
 

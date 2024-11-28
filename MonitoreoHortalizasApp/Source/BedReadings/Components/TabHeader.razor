@@ -29,7 +29,12 @@
                     <option>@port</option>
                 }
             </select>
-            <button class="btn btn-primary ms-2" disabled="@TabHeaderService.IsMainSerialPortSelected" @onclick="@ConnectMainSerialPort">Conectar</button>
+            <button
+                class="btn btn-primary ms-2"
+                disabled="@TabHeaderService.IsMainSerialPortSelected"
+                @onclick="@ConnectMainSerialPort">
+                @ButtonPort1Text
+            </button>
         </div>
 
         <!-- Connect to serial port 2 -->
@@ -61,7 +66,7 @@
                 disabled="@TabHeaderService.IsManualSerialPortSelected"
                 @onclick="ConnectManualSerialPort"
                 >
-                Conectar
+                @ButtonPort2Text
             </button>
         </div>
     </div>
@@ -69,6 +74,9 @@
  
 @code {
     [Parameter, EditorRequired] public string TableTitle { get; set; } = "Cama";
+    
+    private string ButtonPort1Text { get; set; } = "Conectar";
+    private string ButtonPort2Text { get; set; } = "Conectar";
     
     [Inject] protected ISerialPortReader SerialPortReader { get; set; } = default!;
     [Inject] protected TabHeaderService TabHeaderService { get; set; } = default!;
@@ -107,10 +115,6 @@
             return;
         }
         
-        // Disable the main serial port select and set the selected port
-        TabHeaderService.IsMainSerialPortSelected = true;
-        TabHeaderService.MainSerialPortName = MainSerialPortSelected;
-        
         // Trying connect to the selected serial port
         try
         {
@@ -120,6 +124,11 @@
              * The subscribers will be the components that need to read the data from the serial port.
              */
             SerialPortReader.ReadFromPort(MainSerialPortSelected);
+            ButtonPort1Text = "Conectado";
+            
+            // Disable the main serial port select and set the selected port
+            TabHeaderService.IsMainSerialPortSelected = true;
+            TabHeaderService.MainSerialPortName = MainSerialPortSelected;
         }
         catch (UnauthorizedAccessException e)
         {
@@ -137,8 +146,21 @@
             ShowMessage(ToastType.Danger);
             return;
         }
-        
-        TabHeaderService.IsManualSerialPortSelected = true;
-        TabHeaderService.ManualSerialPortName = ManualSerialPortSelected;
+
+        try
+        {
+            SerialPortReader.ReadFromPort2(ManualSerialPortSelected);
+                    
+            ButtonPort2Text = "Conectado";
+            TabHeaderService.IsManualSerialPortSelected = true;
+            TabHeaderService.ManualSerialPortName = ManualSerialPortSelected;
+        }
+        catch (UnauthorizedAccessException e)
+        {
+            var message = e.Message + "|" + "Es posible que el puerto seleccionado esté en uso";
+            
+            Logger.LogError(message);
+            EventAggregator.Publish(new ErrorOccurredEvent { ErrorMessage = message});
+        }
     }
 }

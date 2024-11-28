@@ -132,7 +132,7 @@ public partial class MainLayout
         
                 var waterFlowReadingModel = valveReadingResult.Value;
 
-                var waterFlowReading = new Valve()
+                var waterFlowReading = new Valve
                 {
                     Volumen = waterFlowReadingModel.Volumen,
                     CultivoId = waterFlowReadingModel.CultivoId,
@@ -239,6 +239,7 @@ public partial class MainLayout
         };
         
         await ValveRepository.AddManualWateringReading(waterFlowReading);
+        EventAggregator.Publish(waterFlowReading);
     }
 }
 

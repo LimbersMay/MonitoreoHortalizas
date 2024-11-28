@@ -1,5 +1,6 @@
 using Dapper;
 using GestionHortalizasApp.entities;
+using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
 namespace MonitoreoHortalizasApp.Services;
@@ -14,15 +15,15 @@ public class TemperatureRepository: ITemperatureRepository
 {
     private readonly string _connectionString;
     
-    public TemperatureRepository(Settings settings)
+    public TemperatureRepository(IConfiguration configuration)
     {
-        _connectionString = settings.DefaultConnection;
+        _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
     
     public async Task<IEnumerable<Temperature>> GetReadings()
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.QueryAsync<Temperature>("SELECT * FROM temperatura ORDER BY fecha DESC, hora DESC");
+        var result = await connection.QueryAsync<Temperature>("SELECT * FROM temperatura ORDER BY fecha DESC, hora DESC LIMIT 500");
         return result;
     }
 

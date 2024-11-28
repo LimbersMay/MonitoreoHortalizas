@@ -32,17 +32,6 @@ namespace MonitoreoHortalizasApp
                 Environment.Exit(1);
             };
 
-            // Error handling
-            AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
-            {
-                var error = e.ToString();
-
-                var logger = serviceProvider.GetRequiredService<ILogger<Runner>>();
-                logger.LogCritical(error);
-
-                System.Diagnostics.Debug.WriteLine(e.ToString());
-            };
-
             AppDomain.CurrentDomain.FirstChanceException += (sender, e) =>
             {
                 var error = e.Exception.ToString();

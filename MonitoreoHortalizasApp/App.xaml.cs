@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Text;
 using MonitoreoHortalizasApp.Models;
+using MonitoreoHortalizasApp.Source.SowingCycles.Services;
 
 namespace MonitoreoHortalizasApp
 {
@@ -60,9 +61,14 @@ namespace MonitoreoHortalizasApp
             services.AddTransient<ITemperatureRepository, TemperatureRepository>();
             services.AddTransient<IBarometricRepository, BarometricRepository>();
             services.AddTransient<IValveRepository, ValveRepository>();
-            services.AddSingleton<TabHeaderService>();
-            services.AddSingleton<Settings>();
+            services.AddTransient<IGerminationLogRepository, GerminationLogRepository>();
+            services.AddTransient<ISowingCycleRepository, SowingCycleRepository>();
+            services.AddTransient<ISowingRepository, SowingRepository>();
             services.AddTransient<Runner>();
+            
+            // Services to manage the state of the application
+            services.AddSingleton<TabHeaderService>();
+            services.AddSingleton<SowingCycleFormService>();
         }
     }
 }

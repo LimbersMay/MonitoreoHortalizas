@@ -1,5 +1,6 @@
 using Dapper;
 using GestionHortalizasApp.entities;
+using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
 namespace MonitoreoHortalizasApp.Services;
@@ -17,9 +18,9 @@ public class ValveRepository: IValveRepository
 {
     private string _connectionString;
 
-    public ValveRepository(Settings settings)
+    public ValveRepository(IConfiguration configuration)
     {
-        _connectionString = settings.DefaultConnection;
+        _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
     
     public async Task<IEnumerable<Valve>> GetReadings()
@@ -27,7 +28,7 @@ public class ValveRepository: IValveRepository
         await using var connection = new MySqlConnection(_connectionString);
         var result = await connection.QueryAsync<Valve>(@"
             SELECT fechaEncendido, fechaApagado, volumen, cultivo.nombreCultivo as NombreSembrado 
-            FROM valvula INNER JOIN cultivo ON valvula.cultivoId = cultivo.cultivoId ORDER BY fechaEncendido DESC");
+            FROM valvula INNER JOIN cultivo ON valvula.cultivoId = cultivo.cultivoId ORDER BY fechaEncendido DESC LIMIT 500");
         return result;
     }
     
@@ -43,7 +44,7 @@ public class ValveRepository: IValveRepository
         await using var connection = new MySqlConnection(_connectionString);
         var result = await connection.QueryAsync<Valve>(@"
             SELECT fechaEncendido, fechaApagado, volumen, cultivo.nombreCultivo as NombreSembrado 
-            FROM riegoManual INNER JOIN cultivo ON riegoManual.cultivoId = cultivo.cultivoId ORDER BY fechaEncendido DESC");
+            FROM riegoManual INNER JOIN cultivo ON riegoManual.cultivoId = cultivo.cultivoId ORDER BY fechaEncendido DESC LIMIT 500");
         return result;
     }
     

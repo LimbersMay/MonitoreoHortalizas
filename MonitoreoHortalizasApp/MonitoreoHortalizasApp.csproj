@@ -23,4 +23,9 @@
     <PackageReference Include="System.IO.Ports" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Source\ArduinoAndSystemLogs\Components\" />
+    <Folder Include="Source\Sowings\Components\" />
+  </ItemGroup>
+
 </Project>

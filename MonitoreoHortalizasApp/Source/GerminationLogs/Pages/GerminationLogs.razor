@@ -1,203 +1,160 @@
 ﻿@page "/GerminationLogs"
-@using GestionHortalizasApp.entities
+@using MonitoreoHortalizasApp.entities
+@using MonitoreoHortalizasApp.Events.Sensors
+@using MonitoreoHortalizasApp.Services
+@using MonitoreoHortalizasApp.services.Events
 
 <TabHeader TableTitle="Bitácora de germinación" />
 
+<Modal IsScrollable="true" IsVerticallyCentered="true" UseStaticBackdrop="true" @ref="_modal"/>
+
 <div class="container tables-container">
+
+    <!-- Add a new log button -->
     <div class="row">
         <div class="col-sm">
-            <!-- Add a new germination log -->
-            
-            <div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;">
-                Germinación de la cama 1
-            </div>
-
-            <Grid
-                @ref="_grid"
-                TItem="GerminationLog"
-                Class="table table-hover table-striped border"
-                Data="GerminationLogsReadings"
-                Height="245"
-                FixedHeader="true"
-                AllowSorting="true"
-                Unit="Unit.Px"
-                Responsive="true">
-                <GridColumns>
-                    <GridColumn
-                        TItem="GerminationLog"
-                        HeaderText="Fecha de registro"
-                        PropertyName="FechaRegistro"
-                        SortKeySelector="item => item.FechaRegistro">
-                        @context.FechaRegistro
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Nombre de la cama" PropertyName="NombreCama" SortKeySelector="item => item.NombreCama">
-                        @context.NombreCama
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Temperatura del ambiente" PropertyName="TemperaturaAmbiente" SortKeySelector="item => item.TemperaturaAmbiente">
-                        @context.TemperaturaAmbiente
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Humedad del ambiente" PropertyName="HumedadAmbiente" SortKeySelector="item => item.HumedadAmbiente">
-                        @context.HumedadAmbiente
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="# Zurcos germinados" PropertyName="NumeroZurcosGerminados" SortKeySelector="item => item.NumeroZurcosGerminados">
-                        @context.NumeroZurcosGerminados
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
-                        @context.BroteAlturaMaxima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
-                        @context.BroteAlturaMinima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="# Mortandad" PropertyName="NumeroMortandad" SortKeySelector="item => item.NumeroMortandad">
-                        @context.NumeroMortandad
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima hojas" PropertyName="HojasAlturaMaxima" SortKeySelector="item => item.HojasAlturaMaxima">
-                        @context.HojasAlturaMaxima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima hojas" PropertyName="HojasAlturaMinima" SortKeySelector="item => item.HojasAlturaMinima">
-                        @context.HojasAlturaMinima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Linea" PropertyName="Linea" SortKeySelector="item => item.Linea">
-                        @context.Linea
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Observaciones" PropertyName="Observaciones" SortKeySelector="item => item.Observaciones">
-                        @context.Observaciones
-                    </GridColumn>
-                </GridColumns>
-            </Grid>
+            <button type="button" class="btn btn-primary" @onclick="ShowAddNewLogModal">Nuevo registro</button>
         </div>
     </div>
 
     <div class="row">
         <div class="col-sm">
-            <div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;">
-                Germinación de la cama 2
-            </div>
-
-            <Grid
-                @ref="_grid"
-                TItem="GerminationLog"
-                Class="table table-hover table-striped border"
-                Data="GerminationLogsReadings"
-                Height="245"
-                FixedHeader="true"
-                AllowSorting="true"
-                Unit="Unit.Px"
-                Responsive="true">
-                <GridColumns>
-                    <GridColumn
-                        TItem="GerminationLog"
-                        HeaderText="Fecha de registro"
-                        PropertyName="FechaRegistro"
-                        SortKeySelector="item => item.FechaRegistro"
-                    >
-                        @context.FechaRegistro
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Nombre de la cama" PropertyName="NombreCama" SortKeySelector="item => item.NombreCama">
-                        @context.NombreCama
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Temperatura del ambiente" PropertyName="TemperaturaAmbiente" SortKeySelector="item => item.TemperaturaAmbiente">
-                        @context.TemperaturaAmbiente
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Humedad del ambiente" PropertyName="HumedadAmbiente" SortKeySelector="item => item.HumedadAmbiente">
-                        @context.HumedadAmbiente
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="# Zurcos germinados" PropertyName="NumeroZurcosGerminados" SortKeySelector="item => item.NumeroZurcosGerminados">
-                        @context.NumeroZurcosGerminados
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
-                        @context.BroteAlturaMaxima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
-                        @context.BroteAlturaMinima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="# Mortandad" PropertyName="NumeroMortandad" SortKeySelector="item => item.NumeroMortandad">
-                        @context.NumeroMortandad
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima hojas" PropertyName="HojasAlturaMaxima" SortKeySelector="item => item.HojasAlturaMaxima">
-                        @context.HojasAlturaMaxima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima hojas" PropertyName="HojasAlturaMinima" SortKeySelector="item => item.HojasAlturaMinima">
-                        @context.HojasAlturaMinima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Linea" PropertyName="Linea" SortKeySelector="item => item.Linea">
-                        @context.Linea
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Observaciones" PropertyName="Observaciones" SortKeySelector="item => item.Observaciones">
-                        @context.Observaciones
-                    </GridColumn>
-                </GridColumns>
-            </Grid>
+            <GerminationLogTable @ref="_germinationLogTable1" Title="Germinación de la cama automático 1" GerminationLogsReadings="Bed1GerminationLogs"/>
         </div>
     </div>
 
     <div class="row">
         <div class="col-sm">
-            <div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;">
-                Germinación de la cama 3
-            </div>
+            <GerminationLogTable @ref="_germinationLogTable2" Title="Germinación de la cama automático 2" GerminationLogsReadings="Bed2GerminationLogs"/>
+        </div>
+    </div>
 
-            <Grid
-                @ref="_grid"
-                TItem="GerminationLog"
-                Class="table table-hover table-striped border"
-                Data="GerminationLogsReadings"
-                Height="245"
-                FixedHeader="true"
-                AllowSorting="true"
-                Unit="Unit.Px"
-                Responsive="true">
-                <GridColumns>
-                    <GridColumn
-                        TItem="GerminationLog"
-                        HeaderText="Fecha de registro"
-                        PropertyName="FechaRegistro"
-                        SortKeySelector="item => item.FechaRegistro"
-                    >
-                        @context.FechaRegistro
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Nombre de la cama" PropertyName="NombreCama" SortKeySelector="item => item.NombreCama">
-                        @context.NombreCama
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Temperatura del ambiente" PropertyName="TemperaturaAmbiente" SortKeySelector="item => item.TemperaturaAmbiente">
-                        @context.TemperaturaAmbiente
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Humedad del ambiente" PropertyName="HumedadAmbiente" SortKeySelector="item => item.HumedadAmbiente">
-                        @context.HumedadAmbiente
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="# Zurcos germinados" PropertyName="NumeroZurcosGerminados" SortKeySelector="item => item.NumeroZurcosGerminados">
-                        @context.NumeroZurcosGerminados
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
-                        @context.BroteAlturaMaxima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
-                        @context.BroteAlturaMinima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="# Mortandad" PropertyName="NumeroMortandad" SortKeySelector="item => item.NumeroMortandad">
-                        @context.NumeroMortandad
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura máxima hojas" PropertyName="HojasAlturaMaxima" SortKeySelector="item => item.HojasAlturaMaxima">
-                        @context.HojasAlturaMaxima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Altura mínima hojas" PropertyName="HojasAlturaMinima" SortKeySelector="item => item.HojasAlturaMinima">
-                        @context.HojasAlturaMinima
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Linea" PropertyName="Linea" SortKeySelector="item => item.Linea">
-                        @context.Linea
-                    </GridColumn>
-                    <GridColumn TItem="GerminationLog" HeaderText="Observaciones" PropertyName="Observaciones" SortKeySelector="item => item.Observaciones">
-                        @context.Observaciones
-                    </GridColumn>
-                </GridColumns>
-            </Grid>
+    <div class="row">
+        <div class="col-sm">
+            <GerminationLogTable @ref="_germinationLogTable3" Title="Germinación de la cama manual 3" GerminationLogsReadings="Bed3GerminationLogs"/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm">
+            <GerminationLogTable @ref="_germinationLogTable4" Title="Germinación de la cama manual 4" GerminationLogsReadings="Bed4GerminationLogs"/>
         </div>
     </div>
 </div>
 
 @code
 {
-    Grid<GerminationLog> _grid = default!;
-    public List<GerminationLog> GerminationLogsReadings { get; set; } = new();
+    // Services
+    [Inject] IGerminationLogRepository GerminationLogRepository { get; set; } = default!;
+    [Inject] IEventAggregator EventAggregator { get; set; } = default!;
+    
+    // References
+    private GerminationLogTable _germinationLogTable1 = default!;
+    private GerminationLogTable _germinationLogTable2 = default!;
+    private GerminationLogTable _germinationLogTable3 = default!;
+    private GerminationLogTable _germinationLogTable4 = default!;
+    
+    private Modal _modal = default!;
+    
+    // Database data
+    public List<GerminationLog> Bed1GerminationLogs { get; set; } = new();
+    public List<GerminationLog> Bed2GerminationLogs { get; set; } = new();
+    public List<GerminationLog> Bed3GerminationLogs { get; set; } = new();
+    public List<GerminationLog> Bed4GerminationLogs { get; set; } = new();
+    
+    private async Task ShowAddNewLogModal()
+    {
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("OnCloseModal", EventCallback.Factory.Create(this, OnHideModal));
+        parameters.Add("GerminationLog", null);
+        await _modal.ShowAsync<AddNewGerminationComponent>("Nuevo registro", parameters:parameters);
+    }
+    
+    private async void OnHideModal()
+    {
+        await _modal.HideAsync();
+    }
+
+    protected override async void OnInitialized()
+    {
+        await base.OnInitializedAsync();
+        
+        EventAggregator.Subscribe<GerminationLogAddedEvent>(OnGerminationLogAdded);
+        EventAggregator.Subscribe<GerminationLogUpdatedEvent>(OnGerminationLogUpdated);
+        
+        // Bed 1 germination logs
+        var germinationLogs = await GerminationLogRepository.GetBed1GerminationLogs();
+        germinationLogs.ForEach(germinationLog => Bed1GerminationLogs.Add(germinationLog));
+        await _germinationLogTable1.Refresh();
+        
+        // Bed 2 germination logs
+        var bed2GerminationLogs = await GerminationLogRepository.GetBed2GerminationLogs();
+        bed2GerminationLogs.ForEach(germinationLog => Bed2GerminationLogs.Add(germinationLog));
+        await _germinationLogTable2.Refresh();
+        
+        // Bed 3 germination logs
+        var bed3GerminationLogs = await GerminationLogRepository.GetBed3GerminationLogs();
+        bed3GerminationLogs.ForEach(germinationLog => Bed3GerminationLogs.Add(germinationLog));
+        await _germinationLogTable3.Refresh();
+        
+        // Bed 4 germination logs
+        var bed4GerminationLogs = await GerminationLogRepository.GetBed4GerminationLogs();
+        bed4GerminationLogs.ForEach(germinationLog => Bed4GerminationLogs.Add(germinationLog));
+        await _germinationLogTable4.Refresh();
+    }
+    
+    private async void OnGerminationLogAdded(GerminationLogAddedEvent @event)
+    {
+        switch (@event.GerminationLog.CultivoId)
+        {
+            case 1:
+                Bed1GerminationLogs.Add(@event.GerminationLog);
+                await _germinationLogTable1.Refresh();
+                break;
+            case 2:
+                Bed2GerminationLogs.Add(@event.GerminationLog);
+                await _germinationLogTable2.Refresh();
+                break;
+            case 3:
+                Bed3GerminationLogs.Add(@event.GerminationLog);
+                await _germinationLogTable3.Refresh();
+                break;
+            case 4:
+                Bed4GerminationLogs.Add(@event.GerminationLog);
+                await _germinationLogTable4.Refresh();
+                break;
+        }
+        
+        await GerminationLogRepository.AddGerminationLog(@event.GerminationLog);
+    }
+    
+    private async void OnGerminationLogUpdated(GerminationLogUpdatedEvent @event)
+    {
+        switch (@event.GerminationLog.CultivoId)
+        {
+            case 1:
+                var indexBed1 = Bed1GerminationLogs.FindIndex(log => log.RegistroGerminacionId == @event.GerminationLog.RegistroGerminacionId);
+                Bed1GerminationLogs[indexBed1] = @event.GerminationLog;
+                await _germinationLogTable1.Refresh();
+                
+                await GerminationLogRepository.UpdateGerminationLog(@event.GerminationLog);
+                break;
+            case 2:
+                var indexBed2 = Bed2GerminationLogs.FindIndex(log => log.RegistroGerminacionId == @event.GerminationLog.RegistroGerminacionId);
+                Bed2GerminationLogs[indexBed2] = @event.GerminationLog;
+                await _germinationLogTable2.Refresh();
+                break;
+            case 3:
+                var indexBed3 = Bed3GerminationLogs.FindIndex(log => log.RegistroGerminacionId == @event.GerminationLog.RegistroGerminacionId);
+                Bed3GerminationLogs[indexBed3] = @event.GerminationLog;
+                await _germinationLogTable3.Refresh();
+                break;
+            case 4:
+                var indexBed4 = Bed4GerminationLogs.FindIndex(log => log.RegistroGerminacionId == @event.GerminationLog.RegistroGerminacionId);
+                Bed4GerminationLogs[indexBed4] = @event.GerminationLog;
+                await _germinationLogTable4.Refresh();
+                break;
+        }
+    }
 }
 

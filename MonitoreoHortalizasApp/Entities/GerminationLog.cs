@@ -1,7 +1,9 @@
-﻿namespace GestionHortalizasApp.entities;
+﻿namespace MonitoreoHortalizasApp.entities;
 
 public class GerminationLog
 {
+    public int RegistroGerminacionId { get; set; }
+    public int CultivoId { get; set; }
     public string NombreCama { get; set; }
     public double TemperaturaAmbiente { get; set; }
     public double HumedadAmbiente { get; set; }

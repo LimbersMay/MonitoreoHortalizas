@@ -1,47 +1,76 @@
 ﻿@page "/"
 @using MonitoreoHortalizasApp.models
 
-<TabHeader TableTitle="Promedio de las lecturas del dia"/>
+<TabHeader TableTitle="Resumen de lecturas del día"/>
+
+<!-- Dates input -->
+<div class="container">
+    <div class="d-flex align-items-center gap-5 mt-4">
+        <label class="d-flex flex-column">
+            <span>Fecha de inicio</span>
+            <DateInput 
+                TValue="DateTime" 
+                Value="StartDate"
+                ValueExpression="() => StartDate"
+                Placeholder="Enter Date"
+                ValueChanged="(value) => StartDateChanged(value)"
+                />
+        </label>
+        <label class="d-flex flex-column">
+            <span>Fecha de fin</span>
+            <DateInput 
+                TValue="DateTime" 
+                Placeholder="Enter Date"
+                EnableMinMax="true"
+                Min="MinDate"
+                Max="MaxDate"
+                Disabled="@DisabledEndDate"
+                @bind-Value="EndDate"
+                />
+        </label>
+    </div>
+</div>
+
 
 <div class="container tables-container">
-    <div class="row">
+    <div class="row mt-4">
         <div class="col-sm">
             <SummaryCard
-                Title="Cama 1 automático"
+                Title="Humedad cama 1 automático"
                 Value="@Bed1AverageHumidity"
                 LastRead="DateTime.Now"
-                Symbol="%"
-            />
+                Footer="Promedio"
+                Symbol="%"/>
         </div>
 
         <div class="col-sm">
             <SummaryCard
-                Title="Cama 2 automático"
+                Title="Humedad cama 2 automático"
                 Value="@Bed2AverageHumidity"
                 LastRead="DateTime.Now"
-                Symbol="%"
-            />
+                Footer="Promedio"
+                Symbol="%"/>
         </div>
 
         <div class="col-sm">
             <SummaryCard
-                Title="Cama 3 manual"
+                Title="Humedad cama 3 manual"
                 Value="@Bed3AverageHumidity"
                 LastRead="DateTime.Now"
-                Symbol="%"
-            />
+                Footer="Promedio"
+                Symbol="%"/>
         </div>
 
         <div class="col-sm">
             <SummaryCard
-                Title="Cama 4 manual"
+                Title="Humedad cama 4 manual"
                 Value="@Bed4AverageHumidity"
                 LastRead="DateTime.Now"
-                Symbol="%"
-            />
+                Footer="Promedio"
+                Symbol="%"/>
         </div>
     </div>
-    
+
     <div class="row mt-4">
         <div class="col-sm">
             <SummaryCard
@@ -49,37 +78,37 @@
                 Value="@Bed1WaterAmount"
                 Symbol="L"
                 LastRead="DateTime.Now"
-            />
+                Footer="Total"/>
         </div>
-        
+
         <div class="col-sm">
             <SummaryCard
                 Title="Consumo agua cama 2 automático"
-                Value="17"
+                Value="@Bed2WaterAmount"
                 Symbol="L"
                 LastRead="DateTime.Now"
-            />
+                Footer="Total"/>
         </div>
 
         <div class="col-sm">
             <SummaryCard
                 Title="Consumo agua cama 3 manual"
-                Value="13"
+                Value="@Bed3WaterAmount"
                 Symbol="L"
                 LastRead="DateTime.Now"
-            />
+                Footer="Total"/>
         </div>
 
         <div class="col-sm">
             <SummaryCard
                 Title="Consumo agua cama 4 manual"
-                Value="30"
+                Value="@Bed4WaterAmount"
                 Symbol="L"
                 LastRead="DateTime.Now"
-            />
+                Footer="Total"/>
         </div>
     </div>
-    
+
     <div class="row mt-4">
         <Grid
             @ref="_grid"
@@ -95,23 +124,10 @@
                 <GridColumn
                     TItem="ArduinoSerialLog"
                     HeaderText="Últimos Logs"
-                    PropertyName="SoloFecha"
-                >
+                    PropertyName="SoloFecha">
                     @context.Log
                 </GridColumn>
             </GridColumns>
         </Grid>
     </div>
 </div>
-
-<style>
-    html {
-        overflow: scroll;
-        overflow-x: hidden;
-    }
-
-    ::-webkit-scrollbar {
-        width: 0; /* Remove scrollbar space */
-        background: transparent; /* Optional: just make scrollbar invisible */
-    }
-</style>

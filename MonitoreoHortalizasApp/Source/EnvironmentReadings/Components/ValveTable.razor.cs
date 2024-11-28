@@ -23,52 +23,6 @@ public partial class ValveTable : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        
-        
-        Valves.Add(new Valve()
-        {
-            fechaEncendido = DateTime.Now,
-            fechaApagado = DateTime.Now.AddHours(1),
-            Volumen = 100,
-            NombreSembrado = "Tomate",
-            CultivoId = 1
-        });
-        
-        Valves.Add(new Valve()
-        {
-            fechaEncendido = DateTime.Now,
-            fechaApagado = DateTime.Now.AddHours(1),
-            Volumen = 100,
-            NombreSembrado = "Tomate",
-            CultivoId = 1
-        });
-        
-        Valves.Add(new Valve()
-        {
-            fechaEncendido = DateTime.Now,
-            fechaApagado = DateTime.Now.AddHours(1),
-            Volumen = 100,
-            NombreSembrado = "Tomate",
-            CultivoId = 1
-        });
-        
-        Valves.Add(new Valve()
-        {
-            fechaEncendido = DateTime.Now,
-            fechaApagado = DateTime.Now.AddHours(1),
-            Volumen = 100,
-            NombreSembrado = "Tomate",
-            CultivoId = 1
-        });
-        
-        Valves.Add(new Valve()
-        {
-            fechaEncendido = DateTime.Now,
-            fechaApagado = DateTime.Now.AddHours(1),
-            Volumen = 100,
-            NombreSembrado = "Tomate",
-            CultivoId = 1
-        });
     }
     
     public async Task Refresh()

@@ -1,0 +1,131 @@
+﻿@page "/SowingCycles"
+@using MonitoreoHortalizasApp.Entities
+@using MonitoreoHortalizasApp.Services
+@using MonitoreoHortalizasApp.services.Events
+@using MonitoreoHortalizasApp.Source.SowingCycles.Services
+
+<Modal IsScrollable="true" IsVerticallyCentered="true" UseStaticBackdrop="true" @ref="_modal"/>
+
+<TabHeader TableTitle="Ciclos de siembra"/>
+
+<div 
+    style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;"
+    class="d-flex gap-5 justify-content-around"
+    >
+    Ciclos de siembra
+    
+    <!-- Add a new log button -->
+    <button type="button" class="btn btn-success" @onclick="ShowAddNewLogModal">Crear ciclo</button>
+</div>
+
+<Grid
+    TItem="SowingCycle"
+    @ref="_grid"
+      Class="table table-hover table-striped border"
+      Data="SowingCyclesLogs"
+      FixedHeader="true"
+      AllowSorting="true"
+      Height="500"
+      Unit="Unit.Px"
+      Responsive="true"
+      AllowRowClick="true"
+      OnRowClick="ShowUpdateLogModal"
+     >
+    <GridColumns>
+        <GridColumn TItem="SowingCycle"
+                    HeaderText="Ciclo"
+                    PropertyName="Ciclo"
+                    SortKeySelector="item => item.Ciclo">
+            @context.Ciclo
+        </GridColumn>
+        <GridColumn TItem="SowingCycle" HeaderText="Fecha de inicio" PropertyName="FechaInicio" SortKeySelector="item => item.FechaInicio">
+            @context.FechaInicio
+        </GridColumn>
+        <GridColumn TItem="SowingCycle" HeaderText="Fecha de fin" PropertyName="FechaFin" SortKeySelector="item => item.FechaFin">
+            @context.FechaFin
+        </GridColumn>
+        <GridColumn TItem="SowingCycle" HeaderText="Descripción" PropertyName="Descripcion" SortKeySelector="item => item.Descripcion">
+            @context.Descripcion
+        </GridColumn>
+    </GridColumns>
+</Grid>
+
+@code {
+    #nullable enable
+    
+    Grid<SowingCycle> _grid = default!;
+    
+    // Modal reference
+    private Modal _modal = default!;
+    
+    public List<SowingCycle> SowingCyclesLogs { get; set; } = new();
+
+    [Inject] private ISowingCycleRepository SowingCycleRepository { get; set; } = default!;
+    [Inject] private SowingCycleFormService SowingCycleFormService { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        SowingCyclesLogs.AddRange(await SowingCycleRepository.GetSowingCycles());
+    }
+    
+    private async Task ShowAddNewLogModal()
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            { "OnHideModal", EventCallback.Factory.Create(this, (SowingCycle? e) => OnHideModal(e)) },
+        };
+        SowingCycleFormService.ResetSowingCycle();
+        await _modal.ShowAsync<AddSowingCycle>("Nuevo ciclo", "", parameters);
+    }
+    
+    private async Task ShowUpdateLogModal(GridRowEventArgs<SowingCycle> args){
+        
+        var parameters = new Dictionary<string, object>
+        {
+            { "OnHideModal", EventCallback.Factory.Create(this, (SowingCycle? e) => OnHideModal(e)) },
+        };
+
+        SowingCycleFormService.SowingCycle = args.Item;
+        await _modal.ShowAsync<AddSowingCycle>("Editar ciclo", "", parameters);
+    }
+
+    private async Task OnHideModal(SowingCycle? sowingCycle)
+    {
+        if (sowingCycle is null)
+        {
+            await _modal.HideAsync();
+            return;
+        }
+
+        // Check if exists
+        if (SowingCyclesLogs.Any(x => x.CicloId == sowingCycle.CicloId))
+        {
+            SowingCyclesLogs.RemoveAll(x => x.CicloId == sowingCycle.CicloId);
+            SowingCyclesLogs.Add(new SowingCycle
+            {
+                Ciclo = sowingCycle.Ciclo,
+                CicloId = sowingCycle.CicloId,
+                FechaInicio = sowingCycle.FechaInicio,
+                FechaFin = sowingCycle.FechaFin,
+                Descripcion = sowingCycle.Descripcion
+            });
+        }
+        else
+        {
+            SowingCyclesLogs.Add(new SowingCycle
+            {
+                Ciclo = sowingCycle.Ciclo,
+                CicloId = sowingCycle.CicloId,
+                FechaInicio = sowingCycle.FechaInicio,
+                FechaFin = sowingCycle.FechaFin,
+                Descripcion = sowingCycle.Descripcion
+            });
+        }
+
+        await _grid.RefreshDataAsync();
+        await _modal.HideAsync();
+    }
+
+}

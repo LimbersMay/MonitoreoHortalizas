@@ -26,17 +26,22 @@ public interface IBedRepository
     Task<int> AddBed4HumidityLog(BedHumidity bedHumidity);
     
     // Calculate the amount of water that a bed has received
-    Task<double> CalculateBed1WaterAmount();
+    Task<decimal> CalculateBed1WaterAmount(DateTime startDate, DateTime endDate);
+    Task<decimal> CalculateBed2WaterAmount(DateTime startDate, DateTime endDate);
+    Task<decimal> CalculateBed3WaterAmount(DateTime startDate, DateTime endDate);
+    Task<decimal> CalculateBed4WaterAmount(DateTime startDate, DateTime endDate);
 }
 
 public class BedRepository: IBedRepository
 {
     private readonly string _connectionString;
     
-    private const string SqlGetBeds = "SELECT humedad, fecha, hora FROM {0} ORDER BY fecha DESC, hora DESC";
+    private const string SqlGetBeds = "SELECT humedad, fecha, hora FROM {0} ORDER BY fecha DESC, hora DESC LIMIT 500";
     private const string SqlAddBed = "INSERT INTO {0} (humedad, fecha, hora) VALUES (@humedad, @fecha, @hora)";
     
-    private const string SqlGetBedByDatesAverage = "SELECT humedad FROM {0} WHERE fecha BETWEEN @startDate AND @endDate";
+    private const string SqlGetBedByDates = "SELECT humedad FROM {0} WHERE DATE(fecha) BETWEEN DATE(@startDate) AND DATE(@endDate)";
+    private const string SqlGetBedWaterAmountByDates = "SELECT SUM(Volumen) FROM valvula WHERE DATE(fechaEncendido) BETWEEN DATE(@startDate) AND DATE(@endDate) AND CultivoId = {0}";
+    private const string SqlGetManualWaterAmountByDates = "SELECT SUM(Volumen) FROM riegomanual WHERE DATE(fechaEncendido) BETWEEN DATE(@startDate) AND DATE(@endDate) AND CultivoId = {0}";
         
     public BedRepository(IConfiguration configuration) {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -53,7 +58,7 @@ public class BedRepository: IBedRepository
     public async Task<List<int>> GetBed1HumiditiesByDates(DateTime startDate, DateTime endDate)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var query = string.Format(SqlGetBedByDatesAverage, "cama1");
+        var query = string.Format(SqlGetBedByDates, "cama1");
         return (await connection.QueryAsync<int>(query, new { startDate, endDate })).ToList();
     }
 
@@ -68,7 +73,7 @@ public class BedRepository: IBedRepository
     public async Task<List<int>> GetBed2HumiditiesByDates(DateTime startDate, DateTime endDate)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var query = string.Format(SqlGetBedByDatesAverage, "cama2");
+        var query = string.Format(SqlGetBedByDates, "cama2");
         return (await connection.QueryAsync<int>(query, new { startDate, endDate })).ToList();
     }
 
@@ -83,7 +88,7 @@ public class BedRepository: IBedRepository
     public async Task<List<int>> GetBed3HumiditiesByDates(DateTime startDate, DateTime endDate)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var query = string.Format(SqlGetBedByDatesAverage, "cama3");
+        var query = string.Format(SqlGetBedByDates, "cama3");
         return (await connection.QueryAsync<int>(query, new { startDate, endDate })).ToList();
     }
 
@@ -98,7 +103,7 @@ public class BedRepository: IBedRepository
     public async Task<List<int>> GetBed4HumiditiesByDates(DateTime startDate, DateTime endDate)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var query = string.Format(SqlGetBedByDatesAverage, "cama4");
+        var query = string.Format(SqlGetBedByDates, "cama4");
         return (await connection.QueryAsync<int>(query, new { startDate, endDate })).ToList();
     }
 
@@ -135,10 +140,31 @@ public class BedRepository: IBedRepository
     }
     
     // CALCULATE THE AMOUNT OF WATER THAT A BED HAS RECEIVED
-    public async Task<double> CalculateBed1WaterAmount()
+    public async Task<decimal> CalculateBed1WaterAmount(DateTime startDate, DateTime endDate)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var query = "SELECT SUM(Volumen) FROM valvula WHERE CultivoId = 1";
-        return await connection.ExecuteScalarAsync<double>(query);
+        var query = string.Format(SqlGetBedWaterAmountByDates, 1);
+        return await connection.ExecuteScalarAsync<decimal>(query, new { startDate, endDate });
+    }
+    
+    public async Task<decimal> CalculateBed2WaterAmount(DateTime startDate, DateTime endDate)
+    {
+        await using var connection = new MySqlConnection(_connectionString);
+        var query = string.Format(SqlGetBedWaterAmountByDates, 2);
+        return await connection.ExecuteScalarAsync<decimal>(query, new { startDate, endDate });
+    }
+    
+    public async Task<decimal> CalculateBed3WaterAmount(DateTime startDate, DateTime endDate)
+    {
+        await using var connection = new MySqlConnection(_connectionString);
+        var query = string.Format(SqlGetManualWaterAmountByDates, 3);
+        return await connection.ExecuteScalarAsync<decimal>(query, new { startDate, endDate });
+    }
+    
+    public async Task<decimal> CalculateBed4WaterAmount(DateTime startDate, DateTime endDate)
+    {
+        await using var connection = new MySqlConnection(_connectionString);
+        var query = string.Format(SqlGetManualWaterAmountByDates, 4);
+        return await connection.ExecuteScalarAsync<decimal>(query, new { startDate, endDate });
     }
 }

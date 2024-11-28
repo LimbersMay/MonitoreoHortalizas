@@ -1,0 +1,92 @@
+﻿@using MonitoreoHortalizasApp.entities
+
+<Modal IsScrollable="true" IsVerticallyCentered="true" @ref="_modal" />
+
+<div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;" class="mt-2">
+    @Title
+</div>
+
+<Grid @ref="_grid"
+      TItem="GerminationLog"
+      Class="table table-hover table-striped border"
+      Data="GerminationLogsReadings"
+      Height="245"
+      FixedHeader="true"
+      AllowSorting="true"
+      Unit="Unit.Px"
+      Responsive="true"
+      AllowRowClick="true"
+      OnRowClick="OnRowClick">
+    <GridColumns>
+        <GridColumn TItem="GerminationLog"
+                    HeaderText="Fecha de registro"
+                    PropertyName="FechaRegistro"
+                    SortKeySelector="item => item.FechaRegistro">
+            @context.FechaRegistro
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="Nombre de la cama" PropertyName="NombreCama" SortKeySelector="item => item.NombreCama">
+            @context.NombreCama
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="Temperatura del ambiente" PropertyName="TemperaturaAmbiente" SortKeySelector="item => item.TemperaturaAmbiente">
+            @context.TemperaturaAmbiente °C
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="Humedad del ambiente" PropertyName="HumedadAmbiente" SortKeySelector="item => item.HumedadAmbiente">
+            @context.HumedadAmbiente %
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="# Zurcos germinados" PropertyName="NumeroZurcosGerminados" SortKeySelector="item => item.NumeroZurcosGerminados">
+            @context.NumeroZurcosGerminados
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="Altura máxima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
+            @context.BroteAlturaMaxima cm
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="Altura mínima brote" PropertyName="BroteAlturaMaxima" SortKeySelector="item => item.BroteAlturaMaxima">
+            @context.BroteAlturaMinima cm
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="# Mortandad" PropertyName="NumeroMortandad" SortKeySelector="item => item.NumeroMortandad">
+            @context.NumeroMortandad
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="Altura máxima hojas" PropertyName="HojasAlturaMaxima" SortKeySelector="item => item.HojasAlturaMaxima">
+            @context.HojasAlturaMaxima cm
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="Altura mínima hojas" PropertyName="HojasAlturaMinima" SortKeySelector="item => item.HojasAlturaMinima">
+            @context.HojasAlturaMinima cm
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="Linea" PropertyName="Linea" SortKeySelector="item => item.Linea">
+            @context.Linea
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="Observaciones" PropertyName="Observaciones" SortKeySelector="item => item.Observaciones">
+            @context.Observaciones
+        </GridColumn>
+    </GridColumns>
+</Grid>
+
+@code {
+
+    private Modal _modal;
+    
+    [Parameter, EditorRequired]
+    public List<GerminationLog> GerminationLogsReadings { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Title { get; set; }
+
+    private Grid<GerminationLog> _grid;
+
+    public async Task Refresh()
+    {
+        await _grid.RefreshDataAsync();
+    }
+
+    private async Task OnRowClick(GridRowEventArgs<GerminationLog> args)
+    {
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("OnCloseModal", EventCallback.Factory.Create(this, OnCloseModal));
+        parameters.Add("GerminationLog", args.Item);
+        await _modal.ShowAsync<AddNewGerminationComponent>("Editar registro", parameters:parameters);
+    }
+    
+    private async void OnCloseModal()
+    {
+        await _modal.HideAsync();
+    }
+}

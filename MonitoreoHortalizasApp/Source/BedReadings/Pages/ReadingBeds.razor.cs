@@ -47,8 +47,6 @@ public partial class ReadingBeds: ComponentBase, IAsyncDisposable
         var beds3 = await BedRepository.GetBed3HumidityLog();
         var beds4 = await BedRepository.GetBed4HumidityLog();
         
-        
-        
         foreach (var bed in beds1)
         {
             Beds1.Add(bed);

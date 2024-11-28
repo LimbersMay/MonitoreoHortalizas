@@ -38,15 +38,13 @@ public class SerialPortReader : ISerialPortReader
 
     private readonly IEventAggregator _eventAggregator;
     private readonly ILogger<Runner> _logger;
-    private readonly IJsonParser _jsonParser;
 
     private DateTime _primarySerialPortLastReadTime = DateTime.Now;
 
-    public SerialPortReader(IEventAggregator eventAggregator, ILogger<Runner> logger, IJsonParser jsonParser)
+    public SerialPortReader(IEventAggregator eventAggregator, ILogger<Runner> logger)
     {
         _eventAggregator = eventAggregator;
         _logger = logger;
-        _jsonParser = jsonParser;
 
         var primarySerialPortTimer = new System.Timers.Timer(120000);
 
@@ -170,7 +168,7 @@ public class SerialPortReader : ISerialPortReader
 
         try
         {
-            lineRead = serialPort.ReadLine();
+            lineRead = serialPort.ReadLine().Trim();
         }
         catch (TimeoutException exception)
         {

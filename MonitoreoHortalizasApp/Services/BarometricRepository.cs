@@ -1,5 +1,6 @@
 using Dapper;
 using GestionHortalizasApp.entities;
+using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
 namespace MonitoreoHortalizasApp.Services;
@@ -15,15 +16,15 @@ public class BarometricRepository: IBarometricRepository
 
     private readonly string _connectionString;
     
-    public BarometricRepository(Settings settings)
+    public BarometricRepository(IConfiguration configuration)
     {
-        _connectionString = settings.DefaultConnection;
+        _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
     
     public async Task<IEnumerable<BarometricPressure>> GetReadings()
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.QueryAsync<BarometricPressure>("SELECT * FROM presionBarometrica ORDER BY fecha DESC, hora DESC");
+        var result = await connection.QueryAsync<BarometricPressure>("SELECT * FROM presionBarometrica ORDER BY fecha DESC, hora DESC LIMIT 500");
         return result;
     }
 

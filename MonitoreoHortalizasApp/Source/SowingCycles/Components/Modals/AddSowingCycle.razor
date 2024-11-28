@@ -1,0 +1,104 @@
+﻿@using MonitoreoHortalizasApp.Entities
+@using MonitoreoHortalizasApp.Services
+@using MonitoreoHortalizasApp.services.Events
+@using MonitoreoHortalizasApp.Source.SowingCycles.Services
+<div class="d-flex flex-column gap-2">
+    <div class="form-group">
+        <label for="sowingCycle">
+            Ciclo de siembra
+        </label>
+        <NumberInput Id="sowingCycle" TValue="int" @bind-Value="Model.Ciclo"></NumberInput>
+    </div>
+    
+    <div class="form-group">
+        <label for="sowingStartDate">
+            Fecha de inicio
+        </label>
+        <DateInput Id="sowingStartDate" TValue="DateTime" @bind-Value="Model.FechaInicio"></DateInput>
+    </div>
+    
+    <div class="form-group">
+        <label for="sowingEndDate">
+            Fecha de fin
+        </label>
+        <DateInput Id="sowingEndDate" TValue="DateTime" @bind-Value="Model.FechaFin"></DateInput>
+    </div>
+
+    <div class="form-group">
+        <label for="description">Descripción</label>
+        <textarea class="form-control" id="description" rows="3" @bind="@Model.Descripcion"></textarea>
+    </div>
+
+    <div class="d-flex justify-content-start gap-3">
+        <button type="submit" class="btn btn-primary mt-2" @onclick="OnSubmit">Guardar</button>
+        <button type="button" class="btn btn-secondary mt-2" @onclick="HideModal">Cancelar</button>
+    </div>
+</div>
+
+@code {
+    #nullable enable
+    // Form service
+    [Inject] public SowingCycleFormService SowingCycleFormService { get; set; } = default!;
+    
+    // Form fields
+    
+    // Optional parameters
+    [Parameter] public EventCallback<SowingCycle> OnHideModal { get; set; }
+
+    public SowingCycle Model { get; set; } = new()
+    {
+        Ciclo = 1,
+        FechaInicio = DateTime.Now,
+        FechaFin = DateTime.Now
+    };
+    
+    // Services
+    [Inject] private ISowingCycleRepository SowingCycleRepository { get; set; } = default!;
+    
+    protected override Task OnParametersSetAsync()
+    {
+        base.OnParametersSetAsync();
+        
+        if (SowingCycleFormService.SowingCycle is not null)
+        {
+            Model.CicloId = SowingCycleFormService.SowingCycle.CicloId;
+            Model.Ciclo = SowingCycleFormService.SowingCycle.Ciclo;
+            Model.FechaInicio = SowingCycleFormService.SowingCycle.FechaInicio;
+            Model.FechaFin = SowingCycleFormService.SowingCycle.FechaFin;
+            Model.Descripcion = SowingCycleFormService.SowingCycle.Descripcion;
+        }
+        else
+        {
+            Model.Ciclo = 1;
+            Model.FechaInicio = DateTime.Now;
+            Model.FechaFin = DateTime.Now;
+            Model.Descripcion = string.Empty;
+        }
+        
+        return Task.CompletedTask;
+    }
+
+    private async Task OnSubmit()
+    {
+        // If the SowingCycle is not null, it means we are updating an existing SowingCycle
+        // Otherwise, we are adding a new SowingCycle
+        if (SowingCycleFormService.SowingCycle is not null)
+        {
+            await SowingCycleRepository.UpdateSowingCycle(Model);
+        }
+        else
+        {
+            var newSowingCycleId = await SowingCycleRepository.AddSowingCycle(Model);
+            Model.CicloId = newSowingCycleId;
+        }
+        
+        await OnHideModal.InvokeAsync(Model);
+        SowingCycleFormService.ResetSowingCycle();
+    }
+    
+    private async Task HideModal()
+    {
+        SowingCycleFormService.ResetSowingCycle();
+        await OnHideModal.InvokeAsync();
+    }
+}
