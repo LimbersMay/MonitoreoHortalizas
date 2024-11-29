@@ -8,10 +8,6 @@ namespace MonitoreoHortalizasApp.Services;
 public interface IGerminationLogRepository
 {
     Task<List<GerminationLog>> GetGerminationLogs();
-    Task<List<GerminationLog>> GetBed1GerminationLogs();
-    Task<List<GerminationLog>> GetBed2GerminationLogs();
-    Task<List<GerminationLog>> GetBed3GerminationLogs();
-    Task<List<GerminationLog>> GetBed4GerminationLogs();
     Task<GerminationLog> AddGerminationLog(GerminationLog germinationLog);
     Task<GerminationLog> UpdateGerminationLog(GerminationLog germinationLog);
 }
@@ -20,7 +16,32 @@ public class GerminationLogRepository: IGerminationLogRepository
 {
     private readonly string _connectionString;
     
-    private readonly string GET_GERMINATION_LOGS = "SELECT * FROM registrogerminacion WHERE cultivoId = {0} ORDER BY fechaRegistro DESC LIMIT 500";
+    private const string SqlGetGerminationLogs = @"
+    SELECT 
+        rg.registroGerminacionId,
+        rg.cultivoId,
+        c.nombreCultivo AS NombreCama,
+        cs.ciclo AS Ciclo,
+        rg.temperaturaAmbiente,
+        rg.humedadAmbiente,
+        rg.numeroZurcosGerminados,
+        rg.broteAlturaMinima,
+        rg.broteAlturaMaxima,
+        rg.numeroMortandad,
+        rg.hojasAlturaMaxima,
+        rg.hojasAlturaMinima,
+        rg.linea,
+        rg.observaciones,
+        rg.fechaRegistro
+    FROM 
+        registrogerminacion rg
+    JOIN 
+        cultivo c ON rg.cultivoId = c.cultivoId
+    JOIN 
+        ciclosiembra cs ON c.cicloId = cs.cicloId";
+    
+    private const string SqlGetGerminationLogById = SqlGetGerminationLogs + " WHERE registroGerminacionId = @RegistroGerminacionId";
+
     
     public GerminationLogRepository(IConfiguration configuration)
     {
@@ -30,53 +51,28 @@ public class GerminationLogRepository: IGerminationLogRepository
     public async Task<List<GerminationLog>> GetGerminationLogs()
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.QueryAsync<GerminationLog>("SELECT * FROM registrogerminacion ORDER BY fechaRegistro DESC LIMIT 500");
-        return result.ToList();
-    }
-    
-    public async Task<List<GerminationLog>> GetBed1GerminationLogs()
-    {
-        await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.QueryAsync<GerminationLog>(string.Format(GET_GERMINATION_LOGS, 1));
-        return result.ToList();
-    }
-    
-    public async Task<List<GerminationLog>> GetBed2GerminationLogs()
-    {
-        await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.QueryAsync<GerminationLog>(string.Format(GET_GERMINATION_LOGS, 2));
-        return result.ToList();
-    }
-    
-    public async Task<List<GerminationLog>> GetBed3GerminationLogs()
-    {
-        await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.QueryAsync<GerminationLog>(string.Format(GET_GERMINATION_LOGS, 3));
-        return result.ToList();
-    }
-    
-    public async Task<List<GerminationLog>> GetBed4GerminationLogs()
-    {
-        await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.QueryAsync<GerminationLog>(string.Format(GET_GERMINATION_LOGS, 4));
+        var result = await connection.QueryAsync<GerminationLog>(SqlGetGerminationLogs);
         return result.ToList();
     }
     
     public async Task<GerminationLog> AddGerminationLog(GerminationLog germinationLog)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.ExecuteAsync("INSERT INTO registrogerminacion" +
+        await connection.ExecuteAsync("INSERT INTO registrogerminacion" +
                                                    "(temperaturaAmbiente, humedadAmbiente, numeroZurcosGerminados, broteAlturaMaxima, broteAlturaMinima, numeroMortandad, observaciones, hojasAlturaMinima, hojasAlturaMaxima, linea, fechaRegistro, cultivoId) " +
                                                    "VALUES " +
                                                    "(@temperaturaAmbiente, @humedadAmbiente, @numeroZurcosGerminados, @broteAlturaMaxima, @broteAlturaMinima, @numeroMortandad, @observaciones, @hojasAlturaMinima, @hojasAlturaMaxima, @linea, @fechaRegistro, @cultivoId)"
                                                     , germinationLog);
-        return germinationLog;
+        
+        var lastId = await connection.QueryFirstOrDefaultAsync<int>("SELECT LAST_INSERT_ID()");
+        
+        return await connection.QueryFirstOrDefaultAsync<GerminationLog>(SqlGetGerminationLogById, new { RegistroGerminacionId = lastId });
     }
     
     public async Task<GerminationLog> UpdateGerminationLog(GerminationLog germinationLog)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.ExecuteAsync("UPDATE registrogerminacion SET " +
+        await connection.ExecuteAsync("UPDATE registrogerminacion SET " +
                                                    "temperaturaAmbiente = @temperaturaAmbiente, " +
                                                    "humedadAmbiente = @humedadAmbiente, " +
                                                    "numeroZurcosGerminados = @numeroZurcosGerminados, " +
@@ -91,6 +87,7 @@ public class GerminationLogRepository: IGerminationLogRepository
                                                    "cultivoId = @cultivoId " +
                                                    "WHERE registroGerminacionId = @registroGerminacionId"
                                                     , germinationLog);
-        return germinationLog;
+        
+        return await connection.QueryFirstOrDefaultAsync<GerminationLog>(SqlGetGerminationLogById, new { germinationLog.RegistroGerminacionId });
     }
 }

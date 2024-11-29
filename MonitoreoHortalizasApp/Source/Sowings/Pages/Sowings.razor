@@ -138,7 +138,7 @@
         };
         
         SowingCycleFormService.ResetSowingParameter();
-        await _modal.ShowAsync<CreateSowing>("Crear siembra", "", parameters);
+        await _modal.ShowAsync<CreateSowing>("Crear cultivo", "", parameters);
     }
     
     private async Task ShowUpdateLogModal(GridRowEventArgs<Sowing> args){
@@ -149,7 +149,7 @@
         };
         
         SowingCycleFormService.Sowing = args.Item;
-        await _modal.ShowAsync<CreateSowing>("Editar siembra", "", parameters);
+        await _modal.ShowAsync<CreateSowing>("Editar cultivo", "", parameters);
     }
 
     private async Task OnHideModal(Sowing? sowing)

@@ -9,6 +9,7 @@ public class SowingCycleFormService
 {
     public SowingCycle? SowingCycle { get; set; }
     public Sowing? Sowing { get; set; }
+    public GerminationLog? GerminationLog { get; set; }
     
     public void ResetSowingCycle()
     {
@@ -18,5 +19,10 @@ public class SowingCycleFormService
     public void ResetSowingParameter()
     {
         Sowing = null;
+    }
+    
+    public void ResetGerminationLogParameter()
+    {
+        GerminationLog = null;
     }
 }

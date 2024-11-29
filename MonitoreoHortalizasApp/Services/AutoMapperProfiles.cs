@@ -8,5 +8,6 @@ public class AutoMapperProfiles : Profile
     public AutoMapperProfiles()
     {
         CreateMap<Sowing, Sowing>();
+        CreateMap<GerminationLog, GerminationLog>();
     }
 }

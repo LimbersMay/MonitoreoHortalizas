@@ -1,64 +1,76 @@
-﻿@using MonitoreoHortalizasApp.entities
-@using MonitoreoHortalizasApp.Events.Sensors
+﻿@using AutoMapper
+@using MonitoreoHortalizasApp.entities
+@using MonitoreoHortalizasApp.Entities
+@using MonitoreoHortalizasApp.Services
 @using MonitoreoHortalizasApp.services.Events
+@using MonitoreoHortalizasApp.Source.SowingCycles.Services
 
 <div>
     <div class="form-group">
         <label for="germinationDate">Fecha de registro</label>
-        <DateInput TValue="DateTime" @bind-Value="@RegistrationDate" />
+        <DateInput TValue="DateTime" @bind-Value="@Model.FechaRegistro" />
     </div>
     <div class="form-group">
-        <label for="germinationPercentage">Cama</label>
-        <select class="form-select" id="germinationPercentage" required @onchange="SelectGerminationBed">
-            @foreach (var crop in CropOptions)
+        <label for="germinationPercentage">Ciclo</label>
+        <select class="form-select" id="germinationPercentage" required @onchange="SelectSowingCycle">
+            @foreach (var sowingCycle in SowingCycleOptions)
             {
-                <option value="@crop.CultivoId" selected="@(crop.CultivoId == SelectedGerminationBed)">@crop.NombreCultivo</option>
+                <option value="@sowingCycle.CicloId" selected="@(sowingCycle.CicloId == SelectedSowingCycleId)">@sowingCycle.Ciclo</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="germinationPercentage">Cultivo</label>
+        <select class="form-select" id="germinationPercentage" required @onchange="SelectGerminationBed">
+            @foreach (var crop in SowingOptions)
+            {
+                <option value="@crop.CultivoId" selected="@(crop.CultivoId == Model.CultivoId)">@crop.NombreCultivo</option>
             }
         </select>
     </div>
     <div class="form-group">
         <label for="germinationPercentage">Temperatura del ambiente</label>
-        <NumberInput TValue="double" @bind-Value="@EnvironmentTemperature" />
+        <NumberInput TValue="double" @bind-Value="@Model.TemperaturaAmbiente" />
     </div>
     <div class="form-group">
         <label for="germinationPercentage">Humedad del ambiente</label>
-        <NumberInput TValue="double" @bind-Value="@EnvironmentHumidity" />
+        <NumberInput TValue="double" @bind-Value="@Model.HumedadAmbiente" />
     </div>
     <div class="form-group">
         <label for="germinationPercentage"># Zurcos germinados</label>
-        <NumberInput TValue="int" @bind-Value="@GerminatedFurrows" />
+        <NumberInput TValue="int" @bind-Value="@Model.NumeroZurcosGerminados" />
     </div>
     <div class="form-group">
         <label for="germinationPercentage">Altura máxima tallo</label>
-        <NumberInput TValue="double" @bind-Value="@MaxStemHeight" />
+        <NumberInput TValue="double" @bind-Value="@Model.BroteAlturaMaxima" />
     </div>
     <div class="form-group">
         <label for="germinationPercentage">Altura mínima tallo</label>
-        <NumberInput TValue="double" @bind-Value="@MinStemHeight" />
+        <NumberInput TValue="double" @bind-Value="@Model.BroteAlturaMinima" />
     </div>
     <div class="form-group">
         <label for="germinationPercentage"># Mortandad</label>
-        <NumberInput TValue="double" @bind-Value="@MortalityCount" />
+        <NumberInput TValue="double" @bind-Value="@Model.NumeroMortandad" />
     </div>
     <div class="form-group">
         <label for="germinationPercentage">Altura máxima hojas</label>
-        <NumberInput TValue="double" @bind-Value="@MaxLeafHeight" />
+        <NumberInput TValue="double" @bind-Value="@Model.HojasAlturaMaxima" />
     </div>
     <div class="form-group">
         <label for="germinationPercentage">Altura mínima hojas</label>
-        <NumberInput TValue="double" @bind-Value="@MinLeafHeight" />
+        <NumberInput TValue="double" @bind-Value="@Model.HojasAlturaMinima" />
     </div>
     <div class="form-group">
         <label for="germinationPercentage">Linea</label>
-        <NumberInput TValue="int" @bind-Value="@Line" />
+        <NumberInput TValue="int" @bind-Value="@Model.Linea" />
     </div>
     <div class="form-group">
         <label for="germinationPercentage">Observaciones</label>
-        <textarea class="form-control" id="germinationPercentage" rows="3" @bind="@Observations"></textarea>
+        <textarea class="form-control" id="germinationPercentage" rows="3" @bind="@Model.Observaciones"></textarea>
     </div>
     
     <button type="submit" class="btn btn-primary mt-2" @onclick="OnSubmit">Guardar</button>
-    <button type="button" class="btn btn-secondary mt-2" @onclick="OnCancel">Cancelar</button>
+    <button type="button" class="btn btn-secondary mt-2" @onclick="HideModal">Cancelar</button>
 </div>
 
 @code {
@@ -66,32 +78,50 @@
     
     // Services
     [Inject] IEventAggregator EventAggregator { get; set; } = default!;
+    [Inject] IMapper Mapper { get; set; } = default!;
+    
+    [Inject] ISowingRepository SowingRepository { get; set; } = default!;
+    [Inject] ISowingCycleRepository SowingCycleRepository { get; set; } = default!;
+    [Inject] IGerminationLogRepository GerminationLogRepository { get; set; } = default!;
+    [Inject] SowingCycleFormService SowingCycleFormService { get; set; } = default!;
     
     // Form fields
-    private List<Sowing> CropOptions { get; set; } = new();
+    private int SelectedSowingCycleId { get; set; }
     
-    protected DateTime RegistrationDate { get; set; } = DateTime.Now;
-    private int SelectedGerminationBed { get; set; }
-    private double EnvironmentTemperature { get; set; }
-    private double EnvironmentHumidity { get; set; }
-    private int GerminatedFurrows { get; set; }
-    private double MaxStemHeight { get; set; }
-    private double MinStemHeight { get; set; }
-    private double MortalityCount { get; set; }
-    private double MaxLeafHeight { get; set; }
-    private double MinLeafHeight { get; set; }
-    private int Line { get; set; }
-    private string Observations { get; set; } = string.Empty;
+    private List<Sowing> SowingOptions { get; set; } = new();
+    private List<SowingCycle> SowingCycleOptions { get; set; } = new();
+    
+    public GerminationLog Model { get; set; } = new();
     
     // Parameters
-    [Parameter] public EventCallback OnCloseModal { get; set; } 
-    [Parameter] public GerminationLog? GerminationLog { get; set; }
+    [Parameter] public EventCallback<GerminationLog> OnHideModal { get; set; }
     
     private void SelectGerminationBed(ChangeEventArgs e)
     {
         if (e.Value is not null)
         {
-            SelectedGerminationBed = int.Parse(e.Value.ToString());
+            Console.WriteLine("SelectGerminationBed" + e.Value);
+            Model.CultivoId = int.Parse(e.Value.ToString());
+        }
+    }
+    
+    private async Task SelectSowingCycle(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            var cicleId = int.Parse(e.Value.ToString());
+            var newSowingOptions = await SowingRepository.GetSowingsByCicleId(cicleId);
+            
+            SowingOptions.Clear();
+
+            if (newSowingOptions.Count < 1)
+            {
+                return;
+            }
+
+            SowingOptions.AddRange(newSowingOptions);
+            // Select the first sowing
+            Model.CultivoId = SowingOptions.First().CultivoId;
         }
     }
 
@@ -99,24 +129,13 @@
     {
         await base.OnParametersSetAsync();
         
-        if (GerminationLog is not null)
+        if (SowingCycleFormService.GerminationLog is not null)
         {
-            RegistrationDate = GerminationLog.FechaRegistro;
-            SelectedGerminationBed = GerminationLog.CultivoId;
-            EnvironmentTemperature = GerminationLog.TemperaturaAmbiente;
-            EnvironmentHumidity = GerminationLog.HumedadAmbiente;
-            GerminatedFurrows = GerminationLog.NumeroZurcosGerminados;
-            MaxStemHeight = GerminationLog.BroteAlturaMaxima;
-            MinStemHeight = GerminationLog.BroteAlturaMinima;
-            MortalityCount = GerminationLog.NumeroMortandad;
-            MaxLeafHeight = GerminationLog.HojasAlturaMaxima;
-            MinLeafHeight = GerminationLog.HojasAlturaMinima;
-            Line = GerminationLog.Linea;
-            Observations = GerminationLog.Observaciones;
+            Model = Mapper.Map<GerminationLog>(SowingCycleFormService.GerminationLog);
         }
         else
         {
-            SelectedGerminationBed = CropOptions.First().CultivoId;
+            Model.CultivoId = SowingOptions.First().CultivoId;
         }
     }
 
@@ -124,81 +143,46 @@
     {
         await base.OnInitializedAsync();
         
-        CropOptions = new List<Sowing>
-        {
-            new Sowing { CultivoId = 1, NombreCultivo = "Cama automatizado 1" },
-            new Sowing { CultivoId = 2, NombreCultivo = "Cama automatizado 2" },
-            new Sowing { CultivoId = 3, NombreCultivo = "Cama tradicional 1" },
-            new Sowing { CultivoId = 4, NombreCultivo = "Cama tradicional 2" }
-        };
+        var sowingCycles = await SowingCycleRepository.GetSowingCycles();
+        
+        // Initialize the select options
+        SowingCycleOptions.AddRange(sowingCycles);
+        
+        // Set the selected sowing cycle
+        SelectedSowingCycleId = SowingCycleOptions.Last().CicloId;
+        SowingOptions.AddRange(await SowingRepository.GetSowingsByCicleId(SelectedSowingCycleId));
     }
     
-    private async void OnCancel()
+    private async Task HideModal()
     {
-        // Reset form fields
-        RegistrationDate = DateTime.Now;
-        SelectedGerminationBed = CropOptions.First().CultivoId;
-        EnvironmentTemperature = 0;
-        EnvironmentHumidity = 0;
-        GerminatedFurrows = 0;
-        MaxStemHeight = 0;
-        MinStemHeight = 0;
-        MortalityCount = 0;
-        MaxLeafHeight = 0;
-        MinLeafHeight = 0;
-        Line = 0;
-        Observations = string.Empty;
-        
-        await OnCloseModal.InvokeAsync();
+        SowingCycleFormService.ResetGerminationLogParameter();
+        await OnHideModal.InvokeAsync();
     }
     
     private async void OnSubmit()
     {
-        if (GerminationLog is null)
+        if (SowingCycleFormService.GerminationLog is not null)
         {
-            // Crear un nuevo registro
-            var newGerminationLog = new GerminationLog
-            {
-                FechaRegistro = RegistrationDate,
-                CultivoId = SelectedGerminationBed,
-                TemperaturaAmbiente = EnvironmentTemperature,
-                HumedadAmbiente = EnvironmentHumidity,
-                NumeroZurcosGerminados = GerminatedFurrows,
-                BroteAlturaMaxima = MaxStemHeight,
-                BroteAlturaMinima = MinStemHeight,
-                NumeroMortandad = MortalityCount,
-                HojasAlturaMaxima = MaxLeafHeight,
-                HojasAlturaMinima = MinLeafHeight,
-                Linea = Line,
-                Observaciones = Observations
-            };
-
-            // Aquí puedes añadir lógica para guardar el nuevo registro en la base de datos
-            EventAggregator.Publish(new GerminationLogAddedEvent { GerminationLog = newGerminationLog });
-        }
-        else
-        {
-            // Actualizar el registro existente
-            GerminationLog.FechaRegistro = RegistrationDate;
-            GerminationLog.CultivoId = SelectedGerminationBed;
-            GerminationLog.TemperaturaAmbiente = EnvironmentTemperature;
-            GerminationLog.HumedadAmbiente = EnvironmentHumidity;
-            GerminationLog.NumeroZurcosGerminados = GerminatedFurrows;
-            GerminationLog.BroteAlturaMaxima = MaxStemHeight;
-            GerminationLog.BroteAlturaMinima = MinStemHeight;
-            GerminationLog.NumeroMortandad = MortalityCount;
-            GerminationLog.HojasAlturaMaxima = MaxLeafHeight;
-            GerminationLog.HojasAlturaMinima = MinLeafHeight;
-            GerminationLog.Linea = Line;
-            GerminationLog.Observaciones = Observations;
-
-            // Aquí puedes añadir lógica para actualizar el registro en la base de datos
-            EventAggregator.Publish(new GerminationLogUpdatedEvent { GerminationLog = GerminationLog });
+            // Update the germination log
+            Console.WriteLine(Model.CultivoId);
+            var resultUpdate = await GerminationLogRepository.UpdateGerminationLog(Model);
+            
+            // Reset the germination log parameter
+            SowingCycleFormService.ResetGerminationLogParameter();
+            
+            // Hide the modal
+            await OnHideModal.InvokeAsync(resultUpdate);
+            
+            return;
         }
         
-        // Clear form fields
-        GerminationLog = null;
+        // Add a new germination log
+        var newGerminationLog = await GerminationLogRepository.AddGerminationLog(Model);
         
-        await OnCloseModal.InvokeAsync();
+        // Reset the germination log parameter
+        SowingCycleFormService.ResetGerminationLogParameter();
+        
+        // Hide the modal
+        await OnHideModal.InvokeAsync(newGerminationLog);
     }
 }

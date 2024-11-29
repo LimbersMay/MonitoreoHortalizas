@@ -1,19 +1,28 @@
-﻿@using MonitoreoHortalizasApp.entities
+﻿@using AutoMapper
+@using MonitoreoHortalizasApp.entities
+@using MonitoreoHortalizasApp.Services
+@using MonitoreoHortalizasApp.Source.SowingCycles.Services
 
 <Modal IsScrollable="true" IsVerticallyCentered="true" @ref="_modal" />
 
-<div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;" class="mt-2">
-    @Title
+<div
+    style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;"
+    class="d-flex gap-5 justify-content-around">
+    Registros de germinación
+    <!-- Add a new log button -->
+    <button type="button" class="btn btn-success" @onclick="ShowAddNewSowingModal">Agregar registro</button>
 </div>
 
 <Grid @ref="_grid"
       TItem="GerminationLog"
       Class="table table-hover table-striped border"
       Data="GerminationLogsReadings"
-      Height="245"
+      Height="32"
       FixedHeader="true"
-      AllowSorting="true"
-      Unit="Unit.Px"
+      AllowFiltering="true"
+      PageSize="10"
+      AllowPaging="true"
+      Unit="Unit.Rem"
       Responsive="true"
       AllowRowClick="true"
       OnRowClick="OnRowClick">
@@ -26,6 +35,9 @@
         </GridColumn>
         <GridColumn TItem="GerminationLog" HeaderText="Nombre de la cama" PropertyName="NombreCama" SortKeySelector="item => item.NombreCama">
             @context.NombreCama
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="Ciclo de siembra" PropertyName="Ciclo" SortKeySelector="item => item.Ciclo">
+            @context.Ciclo
         </GridColumn>
         <GridColumn TItem="GerminationLog" HeaderText="Temperatura del ambiente" PropertyName="TemperaturaAmbiente" SortKeySelector="item => item.TemperaturaAmbiente">
             @context.TemperaturaAmbiente °C
@@ -61,16 +73,25 @@
 </Grid>
 
 @code {
-
-    private Modal _modal;
+    #nullable enable
     
-    [Parameter, EditorRequired]
-    public List<GerminationLog> GerminationLogsReadings { get; set; }
+    // Services
+    [Inject] IGerminationLogRepository GerminationLogRepository { get; set; } = default!;
+    [Inject] SowingCycleFormService SowingCycleFormService { get; set; } = default!;
+    
+    [Inject] IMapper Mapper { get; set; } = default!;
 
-    [Parameter, EditorRequired]
-    public string Title { get; set; }
+    private Modal _modal = default!;
+    private Grid<GerminationLog> _grid = default!;
 
-    private Grid<GerminationLog> _grid;
+    public List<GerminationLog> GerminationLogsReadings { get; set; } = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        GerminationLogsReadings.AddRange(await GerminationLogRepository.GetGerminationLogs());
+    }
 
     public async Task Refresh()
     {
@@ -80,13 +101,39 @@
     private async Task OnRowClick(GridRowEventArgs<GerminationLog> args)
     {
         var parameters = new Dictionary<string, object>();
-        parameters.Add("OnCloseModal", EventCallback.Factory.Create(this, OnCloseModal));
-        parameters.Add("GerminationLog", args.Item);
-        await _modal.ShowAsync<AddNewGerminationComponent>("Editar registro", parameters:parameters);
+        parameters.Add("OnHideModal", EventCallback.Factory.Create(this, (GerminationLog e) => OnHideModal(e)));
+        SowingCycleFormService.GerminationLog = args.Item;
+        await _modal.ShowAsync<AddNewGerminationComponent>("Editar registro de germinación", parameters:parameters);
     }
     
-    private async void OnCloseModal()
+    private async Task ShowAddNewSowingModal()
     {
+        var parameters = new Dictionary<string, object>();
+        parameters.Add("OnHideModal", EventCallback.Factory.Create(this, (GerminationLog e) => OnHideModal(e)));
+        SowingCycleFormService.ResetGerminationLogParameter();
+        await _modal.ShowAsync<AddNewGerminationComponent>("Crear registro en la bitácora", parameters:parameters);
+    }
+    
+    private async Task OnHideModal(GerminationLog? germinationLog)
+    {
+        if (germinationLog is null)
+        {
+            await _modal.HideAsync();
+            return;
+        }
+
+        // Check if exists
+        if (GerminationLogsReadings.Any(x => x.RegistroGerminacionId == germinationLog.RegistroGerminacionId))
+        {
+            var index = GerminationLogsReadings.FindIndex(x => x.RegistroGerminacionId == germinationLog.RegistroGerminacionId);
+            GerminationLogsReadings[index] = Mapper.Map<GerminationLog>(germinationLog);
+        }
+        else
+        {
+            GerminationLogsReadings.Add(Mapper.Map<GerminationLog>(germinationLog));
+        }
+
+        await _grid.RefreshDataAsync();
         await _modal.HideAsync();
     }
 }

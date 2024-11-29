@@ -8,6 +8,7 @@ namespace MonitoreoHortalizasApp.Services;
 public interface ISowingRepository
 {
     Task<List<Sowing>> GetSowings();
+    Task<List<Sowing>> GetSowingsByCicleId(int cicleId);
     Task<Sowing> AddSowing(Sowing sowing);
     Task<Sowing> UpdateSowing(Sowing sowing);
 }
@@ -41,6 +42,8 @@ public class SowingRepository : ISowingRepository
     JOIN ciclosiembra ci ON c.cicloId = ci.cicloId";
     
     private const string SqlGetSowingById = SqlGetSowings + " WHERE cultivoId = @CultivoId";
+    
+    private const string SqlGetSowingsByCicleId = SqlGetSowings + " WHERE c.cicloId = @CicloId";
 
     private const string SqlAddSowing = "INSERT INTO cultivo (nombreCultivo, germinacion, fechaSiembra, fechaCosecha, tipoRiego, gramaje, alturaMaxima, alturaMinima, temperaturaAmbienteMaxima, temperaturaAmbienteMinima, humedadAmbienteMaxima, humedadAmbienteMinima, humedadMinimaTierra, humedadMaximaTierra, presionBarometricaMaxima, presionBarometricaMinima, cicloId) VALUES (@NombreCultivo, @Germinacion, @FechaSiembra, @FechaCosecha, @TipoRiego, @Gramaje, @AlturaMaxima, @AlturaMinima, @TemperaturaAmbienteMaxima, @TemperaturaAmbienteMinima, @HumedadAmbienteMaxima, @HumedadAmbienteMinima, @HumedadMinimaTierra, @HumedadMaximaTierra, @PresionBarometricaMaxima, @PresionBarometricaMinima, @cicloId)";
     private const string SqlUpdateSowing = "UPDATE cultivo SET cicloId = @CicloId, nombreCultivo = @NombreCultivo, germinacion = @Germinacion, fechaSiembra = @FechaSiembra, fechaCosecha = @FechaCosecha, tipoRiego = @TipoRiego, gramaje = @Gramaje, alturaMaxima = @AlturaMaxima, alturaMinima = @AlturaMinima, temperaturaAmbienteMaxima = @TemperaturaAmbienteMaxima, temperaturaAmbienteMinima = @TemperaturaAmbienteMinima, humedadAmbienteMaxima = @HumedadAmbienteMaxima, humedadAmbienteMinima = @HumedadAmbienteMinima, humedadMinimaTierra = @HumedadMinimaTierra, humedadMaximaTierra = @HumedadMaximaTierra, presionBarometricaMaxima = @PresionBarometricaMaxima, presionBarometricaMinima = @PresionBarometricaMinima WHERE cultivoId = @CultivoId";
@@ -54,6 +57,13 @@ public class SowingRepository : ISowingRepository
     {
         await using var connection = new MySqlConnection(_connectionString);
         var result = await connection.QueryAsync<Sowing>(SqlGetSowings);
+        return result.ToList();
+    }
+    
+    public async Task<List<Sowing>> GetSowingsByCicleId(int cicleId)
+    {
+        await using var connection = new MySqlConnection(_connectionString);
+        var result = await connection.QueryAsync<Sowing>(SqlGetSowingsByCicleId, new { CicloId = cicleId });
         return result.ToList();
     }
     
