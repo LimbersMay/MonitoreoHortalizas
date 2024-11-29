@@ -64,6 +64,7 @@ namespace MonitoreoHortalizasApp
             services.AddTransient<IGerminationLogRepository, GerminationLogRepository>();
             services.AddTransient<ISowingCycleRepository, SowingCycleRepository>();
             services.AddTransient<ISowingRepository, SowingRepository>();
+            services.AddAutoMapper(typeof(AutoMapperProfiles));
             services.AddTransient<Runner>();
             
             // Services to manage the state of the application

@@ -15,10 +15,35 @@ public interface ISowingRepository
 public class SowingRepository : ISowingRepository
 {
     private readonly string _connectionString;
+
+    private const string SqlGetSowings = @"
+    SELECT 
+        c.cultivoId, 
+        c.nombreCultivo, 
+        c.germinacion, 
+        c.fechaSiembra, 
+        c.fechaCosecha, 
+        c.tipoRiego, 
+        c.gramaje, 
+        c.alturaMaxima, 
+        c.alturaMinima, 
+        c.temperaturaAmbienteMaxima, 
+        c.temperaturaAmbienteMinima, 
+        c.humedadAmbienteMaxima, 
+        c.humedadAmbienteMinima, 
+        c.humedadMinimaTierra, 
+        c.humedadMaximaTierra, 
+        c.presionBarometricaMaxima, 
+        c.presionBarometricaMinima, 
+        c.cicloId,
+        ci.ciclo AS Ciclo 
+    FROM cultivo c
+    JOIN ciclosiembra ci ON c.cicloId = ci.cicloId";
     
-    private const string SqlGetSowings = "SELECT * FROM cultivo";
+    private const string SqlGetSowingById = SqlGetSowings + " WHERE cultivoId = @CultivoId";
+
     private const string SqlAddSowing = "INSERT INTO cultivo (nombreCultivo, germinacion, fechaSiembra, fechaCosecha, tipoRiego, gramaje, alturaMaxima, alturaMinima, temperaturaAmbienteMaxima, temperaturaAmbienteMinima, humedadAmbienteMaxima, humedadAmbienteMinima, humedadMinimaTierra, humedadMaximaTierra, presionBarometricaMaxima, presionBarometricaMinima, cicloId) VALUES (@NombreCultivo, @Germinacion, @FechaSiembra, @FechaCosecha, @TipoRiego, @Gramaje, @AlturaMaxima, @AlturaMinima, @TemperaturaAmbienteMaxima, @TemperaturaAmbienteMinima, @HumedadAmbienteMaxima, @HumedadAmbienteMinima, @HumedadMinimaTierra, @HumedadMaximaTierra, @PresionBarometricaMaxima, @PresionBarometricaMinima, @cicloId)";
-    private const string SqlUpdateSowing = "UPDATE cultivo SET nombreCultivo = @NombreCultivo, germinacion = @Germinacion, fechaSiembra = @FechaSiembra, fechaCosecha = @FechaCosecha, tipoRiego = @TipoRiego, gramaje = @Gramaje, alturaMaxima = @AlturaMaxima, alturaMinima = @AlturaMinima, temperaturaAmbienteMaxima = @TemperaturaAmbienteMaxima, temperaturaAmbienteMinima = @TemperaturaAmbienteMinima, humedadAmbienteMaxima = @HumedadAmbienteMaxima, humedadAmbienteMinima = @HumedadAmbienteMinima, humedadMinimaTierra = @HumedadMinimaTierra, humedadMaximaTierra = @HumedadMaximaTierra, presionBarometricaMaxima = @PresionBarometricaMaxima, presionBarometricaMinima = @PresionBarometricaMinima WHERE cultivoId = @CultivoId";
+    private const string SqlUpdateSowing = "UPDATE cultivo SET cicloId = @CicloId, nombreCultivo = @NombreCultivo, germinacion = @Germinacion, fechaSiembra = @FechaSiembra, fechaCosecha = @FechaCosecha, tipoRiego = @TipoRiego, gramaje = @Gramaje, alturaMaxima = @AlturaMaxima, alturaMinima = @AlturaMinima, temperaturaAmbienteMaxima = @TemperaturaAmbienteMaxima, temperaturaAmbienteMinima = @TemperaturaAmbienteMinima, humedadAmbienteMaxima = @HumedadAmbienteMaxima, humedadAmbienteMinima = @HumedadAmbienteMinima, humedadMinimaTierra = @HumedadMinimaTierra, humedadMaximaTierra = @HumedadMaximaTierra, presionBarometricaMaxima = @PresionBarometricaMaxima, presionBarometricaMinima = @PresionBarometricaMinima WHERE cultivoId = @CultivoId";
 
     public SowingRepository(IConfiguration configuration)
     {
@@ -34,15 +59,21 @@ public class SowingRepository : ISowingRepository
     
     public async Task<Sowing> AddSowing(Sowing sowing)
     {
+        Console.WriteLine(sowing.Gramaje);
+        Console.WriteLine(sowing.AlturaMaxima);
+        Console.WriteLine(sowing.AlturaMinima);
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.ExecuteAsync(SqlAddSowing, sowing);
-        return sowing;
+        await connection.ExecuteAsync(SqlAddSowing, sowing); 
+        
+        var lastId = await connection.QueryFirstOrDefaultAsync<int>("SELECT LAST_INSERT_ID()");
+        return await connection.QueryFirstOrDefaultAsync<Sowing>(SqlGetSowingById, new { CultivoId = lastId });
     }
     
     public async Task<Sowing> UpdateSowing(Sowing sowing)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.ExecuteAsync(SqlUpdateSowing, sowing);
-        return sowing;
+        await connection.ExecuteAsync(SqlUpdateSowing, sowing);
+        
+        return await connection.QueryFirstOrDefaultAsync<Sowing>(SqlGetSowingById, new { sowing.CultivoId });
     }
 }

@@ -3,6 +3,22 @@
   "WorkspaceRootPath": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|c:\\users\\limbe\\source\\repos\\monitoreohortalizasapp\\monitoreohortalizasapp\\source\\sowings\\components\\modals\\createsowing.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|solutionrelative:monitoreohortalizasapp\\source\\sowings\\components\\modals\\createsowing.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|c:\\users\\limbe\\source\\repos\\monitoreohortalizasapp\\monitoreohortalizasapp\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|solutionrelative:monitoreohortalizasapp\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|c:\\users\\limbe\\source\\repos\\monitoreohortalizasapp\\monitoreohortalizasapp\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|solutionrelative:monitoreohortalizasapp\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|c:\\users\\limbe\\source\\repos\\monitoreohortalizasapp\\monitoreohortalizasapp\\source\\sowings\\pages\\sowings.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|solutionrelative:monitoreohortalizasapp\\source\\sowings\\pages\\sowings.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|c:\\users\\limbe\\source\\repos\\monitoreohortalizasapp\\monitoreohortalizasapp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|solutionrelative:monitoreohortalizasapp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -29,10 +45,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|c:\\users\\limbe\\source\\repos\\monitoreohortalizasapp\\monitoreohortalizasapp\\entities\\germinationlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|solutionrelative:monitoreohortalizasapp\\entities\\germinationlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|c:\\users\\limbe\\source\\repos\\monitoreohortalizasapp\\monitoreohortalizasapp\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{79A8131E-39EF-4B66-8ED9-329FE6831373}|MonitoreoHortalizasApp\\MonitoreoHortalizasApp.csproj|solutionrelative:monitoreohortalizasapp\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,46 +54,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 1,
               "Title": "App.xaml.cs",
               "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\App.xaml.cs",
               "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\App.xaml.cs",
               "ToolTip": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\App.xaml.cs",
               "RelativeToolTip": "MonitoreoHortalizasApp\\App.xaml.cs",
-              "ViewState": "AQIAACcAAAAAAAAAAADwvzYAAAAAAAAA",
+              "ViewState": "AQIAACcAAAAAAAAAAADwvzYAAAAPAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-12T04:54:59.706Z",
               "IsPinned": true
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\appsettings.json",
-              "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\appsettings.json",
-              "ToolTip": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\appsettings.json",
-              "RelativeToolTip": "MonitoreoHortalizasApp\\appsettings.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-11-15T23:07:17.837Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "BarometricRepository.cs",
-              "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Services\\BarometricRepository.cs",
-              "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\Services\\BarometricRepository.cs",
-              "ToolTip": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Services\\BarometricRepository.cs",
-              "RelativeToolTip": "MonitoreoHortalizasApp\\Services\\BarometricRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-15T23:04:37.652Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
@@ -89,7 +75,68 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\MainWindow.xaml.cs",
+              "RelativeToolTip": "MonitoreoHortalizasApp\\MainWindow.xaml.cs",
+              "ViewState": "AQIAAAEAAAAAAAAAAAAUwA8AAAAqAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-28T22:56:20.096Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "Sowings.razor",
+              "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Source\\Sowings\\Pages\\Sowings.razor",
+              "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\Source\\Sowings\\Pages\\Sowings.razor",
+              "ToolTip": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Source\\Sowings\\Pages\\Sowings.razor",
+              "RelativeToolTip": "MonitoreoHortalizasApp\\Source\\Sowings\\Pages\\Sowings.razor",
+              "ViewState": "AQIAAIMAAAAAAAAAAAAkwJIAAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-11-28T22:56:18.023Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CreateSowing.razor",
+              "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Source\\Sowings\\Components\\Modals\\CreateSowing.razor",
+              "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\Source\\Sowings\\Components\\Modals\\CreateSowing.razor",
+              "ToolTip": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Source\\Sowings\\Components\\Modals\\CreateSowing.razor",
+              "RelativeToolTip": "MonitoreoHortalizasApp\\Source\\Sowings\\Components\\Modals\\CreateSowing.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAI8AAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-11-28T22:52:37.773Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\appsettings.json",
+              "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\appsettings.json",
+              "ToolTip": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\appsettings.json",
+              "RelativeToolTip": "MonitoreoHortalizasApp\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-11-15T23:07:17.837Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "BarometricRepository.cs",
+              "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Services\\BarometricRepository.cs",
+              "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\Services\\BarometricRepository.cs",
+              "ToolTip": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Services\\BarometricRepository.cs",
+              "RelativeToolTip": "MonitoreoHortalizasApp\\Services\\BarometricRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-15T23:04:37.652Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "_Imports.razor",
               "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Source\\_Imports.razor",
               "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\Source\\_Imports.razor",
@@ -101,7 +148,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "ManualWateringReadings.razor",
               "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Source\\ManualWateringReadings\\Pages\\ManualWateringReadings.razor",
               "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\Source\\ManualWateringReadings\\Pages\\ManualWateringReadings.razor",
@@ -113,7 +160,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "GerminationLogTable.razor",
               "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Source\\GerminationLogs\\Components\\GerminationLogTable.razor",
               "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\Source\\GerminationLogs\\Components\\GerminationLogTable.razor",
@@ -121,12 +168,11 @@
               "RelativeToolTip": "MonitoreoHortalizasApp\\Source\\GerminationLogs\\Components\\GerminationLogTable.razor",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAGAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-14T18:00:00.317Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-14T18:00:00.317Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 10,
               "Title": "GerminationLog.cs",
               "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Entities\\GerminationLog.cs",
               "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\Entities\\GerminationLog.cs",
@@ -138,7 +184,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "GerminationLogs.razor",
               "DocumentMoniker": "C:\\Users\\limbe\\source\\repos\\MonitoreoHortalizasApp\\MonitoreoHortalizasApp\\Source\\GerminationLogs\\Pages\\GerminationLogs.razor",
               "RelativeDocumentMoniker": "MonitoreoHortalizasApp\\Source\\GerminationLogs\\Pages\\GerminationLogs.razor",

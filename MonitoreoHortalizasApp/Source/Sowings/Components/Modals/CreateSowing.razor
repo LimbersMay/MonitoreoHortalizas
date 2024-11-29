@@ -1,0 +1,214 @@
+﻿@using AutoMapper
+@using MonitoreoHortalizasApp.entities
+@using MonitoreoHortalizasApp.Entities
+@using MonitoreoHortalizasApp.Services
+@using MonitoreoHortalizasApp.Source.SowingCycles.Services
+
+<div class="d-flex flex-column gap-2">
+
+    <div class="form-group">
+        <label for="sowingName">
+            Nombre del cultivo
+        </label>
+        <input Id="sowingName" class="form-control" TValue="string" @bind="Model.NombreCultivo"/>
+    </div>
+
+    <div class="form-group">
+        <div class="form-group">
+            <label>Ciclo de siembra</label>
+            <select class="form-select" id="germinationPercentage" required @onchange="SelectSowingCycle">
+                @foreach (var sowingCycle in SowingCycleOptions)
+                {
+                    <option value="@sowingCycle.CicloId" selected="@(sowingCycle.CicloId == Model.CicloId)">@sowingCycle.Ciclo</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingTotalGermination">
+            Germinación total
+        </label>
+        <NumberInput Id="sowingTotalGermination" TValue="int" @bind-Value="Model.Germinacion"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingStartDate">
+            Fecha de siembra
+        </label>
+        <DateInput Id="sowingStartDate" TValue="DateTime" @bind-Value="Model.FechaSiembra"></DateInput>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingEndDate">
+            Fecha de fin
+        </label>
+        <DateInput Id="sowingEndDate" TValue="DateTime" @bind-Value="Model.FechaCosecha"></DateInput>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingIrrigationType">
+            Tipo de riego
+        </label>
+        <input Id="sowingIrrigationType" class="form-control" TValue="string" @bind="Model.TipoRiego"/>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingWeight">
+            Gramaje
+        </label>
+        <NumberInput Id="sowingWeight" TValue="double" @bind-Value="Model.Gramaje"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingMaxHeight">
+            Altura máxima
+        </label>
+        <NumberInput Id="sowingMaxHeight" TValue="double" @bind-Value="Model.AlturaMaxima"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingMinHeight">
+            Altura mínima
+        </label>
+        <NumberInput Id="sowingMinHeight" TValue="double" @bind-Value="Model.AlturaMinima"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingMaxAmbientTemperature">
+            Temperatura ambiente máxima
+        </label>
+        <NumberInput Id="sowingMaxAmbientTemperature" TValue="int" @bind-Value="Model.TemperaturaAmbienteMaxima"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingMinAmbientTemperature">
+            Temperatura ambiente mínima
+        </label>
+        <NumberInput Id="sowingMinAmbientTemperature" TValue="int" @bind-Value="Model.TemperaturaAmbienteMinima"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingMaxAmbientHumidity">
+            Humedad ambiente máxima
+        </label>
+        <NumberInput Id="sowingMaxAmbientHumidity" TValue="int" @bind-Value="Model.HumedadAmbienteMaxima"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingMinAmbientHumidity">
+            Humedad ambiente mínima
+        </label>
+        <NumberInput Id="sowingMinAmbientHumidity" TValue="int" @bind-Value="Model.HumedadAmbienteMinima"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingMinSoilHumidity">
+            Humedad mínima de la tierra
+        </label>
+        <NumberInput Id="sowingMinSoilHumidity" TValue="int" @bind-Value="Model.HumedadMinimaTierra"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label for="sowingMaxSoilHumidity">
+            Humedad máxima de la tierra
+        </label>
+        <NumberInput Id="sowingMaxSoilHumidity" TValue="int" @bind-Value="Model.HumedadMaximaTierra"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label for="presionBarometricaMinima">
+            Presión barométrica mínima
+        </label>
+        <NumberInput Id="presionBarometricaMinima" TValue="int" @bind-Value="Model.PresionBarometricaMinima"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label for="presionBarometricaMaxima">
+            Presión barométrica máxima
+        </label>
+        <NumberInput Id="presionBarometricaMaxima" TValue="int" @bind-Value="Model.PresionBarometricaMaxima"></NumberInput>
+    </div>
+
+    <div class="d-flex justify-content-start gap-3">
+        <button type="submit" class="btn btn-primary mt-2" @onclick="OnSubmit">Guardar</button>
+        <button type="button" class="btn btn-secondary mt-2" @onclick="HideModal">Cancelar</button>
+    </div>
+</div>
+
+@code {
+#nullable enable
+    // Services
+    [Inject] public IMapper Mapper { get; set; } = default!;
+
+    [Inject] public ISowingCycleRepository SowingCycleRepository { get; set; } = default!;
+    [Inject] public ISowingRepository SowingRepository { get; set; } = default!;
+    
+    [Inject] public SowingCycleFormService SowingCycleFormService { get; set; } = default!;
+
+    // Modal parameters
+    [Parameter] public EventCallback<Sowing> OnHideModal { get; set; }
+    public Sowing Model { get; set; } = new();
+
+    // Form fields
+    private List<SowingCycle> SowingCycleOptions { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        SowingCycleOptions.AddRange(await SowingCycleRepository.GetSowingCycles());
+
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        if (SowingCycleFormService.Sowing is not null)
+        {
+            Model = Mapper.Map<Sowing>(SowingCycleFormService.Sowing);
+        }
+        else
+        {
+            Model = new Sowing();
+            Model.CicloId = SowingCycleOptions.FirstOrDefault()?.CicloId ?? 1;
+        }
+    }
+
+    private void SelectSowingCycle(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            Model.CicloId = int.Parse(e.Value.ToString());
+        }
+    }
+
+    private async Task OnSubmit()
+    {
+        /*
+         * If the SowingCycleFormService.Sowing is not null, then we are updating a sowing
+         */
+        if (SowingCycleFormService.Sowing is not null)
+        {
+            var resultUpdate = await SowingRepository.UpdateSowing(Model);
+            SowingCycleFormService.ResetSowingParameter();
+            await OnHideModal.InvokeAsync(resultUpdate);
+            return;
+        }
+
+        /*
+         * Otherwise, we are adding a new sowing
+         */
+        var newSowing = await SowingRepository.AddSowing(Model);
+        
+        // Reset form
+        SowingCycleFormService.ResetSowingParameter();
+        await OnHideModal.InvokeAsync(newSowing);
+    }
+
+    private async Task HideModal()
+    {
+        SowingCycleFormService.ResetSowingParameter();
+        await OnHideModal.InvokeAsync();
+    }
+}

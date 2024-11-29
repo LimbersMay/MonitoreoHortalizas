@@ -1,23 +1,34 @@
 ﻿@page "/Sowings"
 @using MonitoreoHortalizasApp.entities
 @using MonitoreoHortalizasApp.Services
+@using MonitoreoHortalizasApp.Source.SowingCycles.Services
+@using IMapper = AutoMapper.IMapper
 
 <TabHeader TableTitle="Registro de cultivos por ciclo"/>
 
-<div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;" class="mt-2">
+<Modal IsScrollable="true" IsVerticallyCentered="true" UseStaticBackdrop="true" @ref="_modal"/>
+
+<div
+    style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;"
+    class="d-flex gap-5 justify-content-around">
     Cultivos
+    <!-- Add a new log button -->
+    <button type="button" class="btn btn-success" @onclick="ShowAddNewSowingModal">Crear cultivo</button>
 </div>
 
 <Grid @ref="_grid"
       TItem="Sowing"
       Class="table table-hover table-striped border"
       Data="SowingRegistries"
-      Height="430"
+      Height="500"
       FixedHeader="true"
       AllowFiltering="true"
       Unit="Unit.Px"
       Responsive="true"
-      AllowRowClick="true">
+      AllowRowClick="true"
+      AllowPaging="true"
+      PageSize="6"
+      OnRowClick="ShowUpdateLogModal">
     <GridColumns>
         <GridColumn
             TItem="Sowing"
@@ -27,72 +38,72 @@
         </GridColumn>
         
         <!-- CicloId -->
-        <GridColumn TItem="Sowing" HeaderText="Ciclo de siembra" PropertyName="CicloId" SortKeySelector="item => item.CicloId">
-            @context.CicloId
+        <GridColumn TItem="Sowing" HeaderText="Ciclo de siembra" PropertyName="Ciclo" SortKeySelector="item => item.Ciclo">
+            @context.Ciclo
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Germinación" Context="sowingContext" PropertyName="Germinacion" SortKeySelector="item => item.Germinacion">
-            @sowingContext.Germinacion
+        <GridColumn TItem="Sowing" HeaderText="Germinación total" PropertyName="Germinacion" SortKeySelector="item => item.Germinacion">
+            @context.Germinacion
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Fecha de siembra" Context="sowingContext" PropertyName="FechaSiembra" SortKeySelector="item => item.FechaSiembra">
-            @sowingContext.FechaSiembra
+        <GridColumn TItem="Sowing" HeaderText="Fecha de siembra" PropertyName="FechaSiembra" SortKeySelector="item => item.FechaSiembra">
+            @context.FechaSiembra
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Fecha de fin" Context="sowingContext" PropertyName="FechaCosecha" SortKeySelector="item => item.FechaCosecha">
-            @sowingContext.FechaCosecha
+        <GridColumn TItem="Sowing" HeaderText="Fecha de cosecha" PropertyName="FechaCosecha" SortKeySelector="item => item.FechaCosecha">
+            @context.FechaCosecha
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Tipo de riego" Context="sowingContext" PropertyName="TipoRiego" SortKeySelector="item => item.TipoRiego">
-            @sowingContext.TipoRiego
+        <GridColumn TItem="Sowing" HeaderText="Tipo de riego" PropertyName="TipoRiego" SortKeySelector="item => item.TipoRiego">
+            @context.TipoRiego
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Gramaje" Context="sowingContext" PropertyName="Gramaje" SortKeySelector="item => item.Gramaje">
-            @sowingContext.Gramaje
+        <GridColumn TItem="Sowing" HeaderText="Gramaje" PropertyName="Gramaje" SortKeySelector="item => item.Gramaje">
+            @context.Gramaje
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Altura máxima" Context="sowingContext" PropertyName="AlturaMaxima" SortKeySelector="item => item.AlturaMaxima">
-            @sowingContext.AlturaMaxima
+        <GridColumn TItem="Sowing" HeaderText="Altura máxima" PropertyName="AlturaMaxima" SortKeySelector="item => item.AlturaMaxima">
+            @context.AlturaMaxima
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Altura mínima" Context="sowingContext" PropertyName="AlturaMinima" SortKeySelector="item => item.AlturaMinima">
-            @sowingContext.AlturaMinima
+        <GridColumn TItem="Sowing" HeaderText="Altura mínima" PropertyName="AlturaMinima" SortKeySelector="item => item.AlturaMinima">
+            @context.AlturaMinima
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Temperatura ambiente máxima" Context="sowingContext" PropertyName="TemperaturaAmbienteMaxima" SortKeySelector="item => item.TemperaturaAmbienteMaxima">
-            @sowingContext.TemperaturaAmbienteMaxima
+        <GridColumn TItem="Sowing" HeaderText="Temperatura ambiente máxima" PropertyName="TemperaturaAmbienteMaxima" SortKeySelector="item => item.TemperaturaAmbienteMaxima">
+            @context.TemperaturaAmbienteMaxima
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Temperatura ambiente mínima" Context="sowingContext" PropertyName="TemperaturaAmbienteMinima" SortKeySelector="item => item.TemperaturaAmbienteMinima">
-            @sowingContext.TemperaturaAmbienteMinima
+        <GridColumn TItem="Sowing" HeaderText="Temperatura ambiente mínima" PropertyName="TemperaturaAmbienteMinima" SortKeySelector="item => item.TemperaturaAmbienteMinima">
+            @context.TemperaturaAmbienteMinima
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Humedad ambiente máxima" Context="sowingContext" PropertyName="HumedadAmbienteMaxima" SortKeySelector="item => item.HumedadAmbienteMaxima">
-            @sowingContext.HumedadAmbienteMaxima
+        <GridColumn TItem="Sowing" HeaderText="Humedad ambiente máxima" PropertyName="HumedadAmbienteMaxima" SortKeySelector="item => item.HumedadAmbienteMaxima">
+            @context.HumedadAmbienteMaxima
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Humedad ambiente mínima" Context="sowingContext" PropertyName="HumedadAmbienteMinima" SortKeySelector="item => item.HumedadAmbienteMinima">
-            @sowingContext.HumedadAmbienteMinima
+        <GridColumn TItem="Sowing" HeaderText="Humedad ambiente mínima" PropertyName="HumedadAmbienteMinima" SortKeySelector="item => item.HumedadAmbienteMinima">
+            @context.HumedadAmbienteMinima
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Humedad mínima de la tierra" Context="sowingContext" PropertyName="HumedadMinimaTierra" SortKeySelector="item => item.HumedadMinimaTierra">
-            @sowingContext.HumedadMinimaTierra
+        <GridColumn TItem="Sowing" HeaderText="Humedad mínima de la tierra" PropertyName="HumedadMinimaTierra" SortKeySelector="item => item.HumedadMinimaTierra">
+            @context.HumedadMinimaTierra
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Humedad máxima de la tierra" Context="sowingContext" PropertyName="HumedadMaximaTierra" SortKeySelector="item => item.HumedadMaximaTierra">
-            @sowingContext.HumedadMaximaTierra
+        <GridColumn TItem="Sowing" HeaderText="Humedad máxima de la tierra" PropertyName="HumedadMaximaTierra" SortKeySelector="item => item.HumedadMaximaTierra">
+            @context.HumedadMaximaTierra
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Humedad mínima de la tierra" Context="sowingContext" PropertyName="HumedadMinimaTierra" SortKeySelector="item => item.HumedadMinimaTierra">
-            @sowingContext.HumedadMinimaTierra
+        <GridColumn TItem="Sowing" HeaderText="Humedad mínima de la tierra" PropertyName="HumedadMinimaTierra" SortKeySelector="item => item.HumedadMinimaTierra">
+            @context.HumedadMinimaTierra
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Presión barométrica máxima" Context="sowingContext" PropertyName="PresionBarometricaMaxima" SortKeySelector="item => item.PresionBarometricaMaxima">
-            @sowingContext.PresionBarometricaMaxima
+        <GridColumn TItem="Sowing" HeaderText="Presión barométrica máxima" PropertyName="PresionBarometricaMaxima" SortKeySelector="item => item.PresionBarometricaMaxima">
+            @context.PresionBarometricaMaxima
         </GridColumn>
 
-        <GridColumn TItem="Sowing" HeaderText="Presión barométrica mínima" Context="sowingContext" PropertyName="PresionBarometricaMinima" SortKeySelector="item => item.PresionBarometricaMinima">
-            @sowingContext.PresionBarometricaMinima
+        <GridColumn TItem="Sowing" HeaderText="Presión barométrica mínima" PropertyName="PresionBarometricaMinima" SortKeySelector="item => item.PresionBarometricaMinima">
+            @context.PresionBarometricaMinima
         </GridColumn>
 
     </GridColumns>
@@ -100,9 +111,15 @@
 
 
 @code {
+    #nullable enable
+    
     private Grid<Sowing> _grid = default!;
+    private Modal _modal = default!;
 
     [Inject] private ISowingRepository SowingRepository { get; set; } = default!;
+    [Inject] private SowingCycleFormService SowingCycleFormService { get; set; } = default!;
+    
+    [Inject] private IMapper Mapper { get; set; } = default!;
 
     public List<Sowing> SowingRegistries { get; set; } = new();
 
@@ -111,5 +128,50 @@
         await base.OnInitializedAsync();
         SowingRegistries.AddRange(await SowingRepository.GetSowings());
     }
+    
+    private async Task ShowAddNewSowingModal()
+    {
+        Console.WriteLine("ShowAddNewSowingModal");
+        var parameters = new Dictionary<string, object>
+        {
+            { "OnHideModal", EventCallback.Factory.Create(this, (Sowing? e) => OnHideModal(e)) },
+        };
+        
+        SowingCycleFormService.ResetSowingParameter();
+        await _modal.ShowAsync<CreateSowing>("Crear siembra", "", parameters);
+    }
+    
+    private async Task ShowUpdateLogModal(GridRowEventArgs<Sowing> args){
+        
+        var parameters = new Dictionary<string, object>
+        {
+            { "OnHideModal", EventCallback.Factory.Create(this, (Sowing? e) => OnHideModal(e)) },
+        };
+        
+        SowingCycleFormService.Sowing = args.Item;
+        await _modal.ShowAsync<CreateSowing>("Editar siembra", "", parameters);
+    }
 
+    private async Task OnHideModal(Sowing? sowing)
+    {
+        if (sowing is null)
+        {
+            await _modal.HideAsync();
+            return;
+        }
+
+        // Check if exists
+        if (SowingRegistries.Any(x => x.CultivoId == sowing.CultivoId))
+        {
+            var index = SowingRegistries.FindIndex(x => x.CultivoId == sowing.CultivoId);
+            SowingRegistries[index] = Mapper.Map<Sowing>(sowing);
+        }
+        else
+        {
+            SowingRegistries.Add(Mapper.Map<Sowing>(sowing));
+        }
+
+        await _grid.RefreshDataAsync();
+        await _modal.HideAsync();
+    }
 }

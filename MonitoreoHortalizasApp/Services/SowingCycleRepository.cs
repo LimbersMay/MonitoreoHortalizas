@@ -44,11 +44,9 @@ public class SowingCycleRepository: ISowingCycleRepository
     public async Task<int> AddSowingCycle(SowingCycle sowingCycle)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.ExecuteAsync(_addSowingCycle, sowingCycle);
+        await connection.ExecuteAsync(_addSowingCycle, sowingCycle);
         
-        var lastId = await connection.ExecuteScalarAsync<int>("SELECT LAST_INSERT_ID()");
-        
-        return lastId;
+        return  await connection.ExecuteScalarAsync<int>("SELECT LAST_INSERT_ID()");
     }
     
     public async Task<SowingCycle> UpdateSowingCycle(SowingCycle sowingCycle)
