@@ -1,8 +1,8 @@
-namespace GestionHortalizasApp.entities;
+namespace MonitoreoHortalizasApp.entities;
 
 public class BarometricPressure
 { 
-    public int IdPresionBarometrica { get; set; }
+    public string idPresionBarometrica { get; set; }
     public DateTime Fecha { get; set; }
     public TimeSpan Hora { get; set; }
     public Decimal Presion { get; set; }

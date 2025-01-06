@@ -1,5 +1,5 @@
 using Dapper;
-using GestionHortalizasApp.entities;
+using MonitoreoHortalizasApp.entities;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
@@ -31,7 +31,7 @@ public class BarometricRepository: IBarometricRepository
     public async Task<int> AddReading(BarometricPressure barometricPressure)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.ExecuteAsync("INSERT INTO presionBarometrica (presion, temperatura, altitud, fecha, hora) VALUES (@presion, @temperatura, @altitud, @fecha, @hora)", barometricPressure);
+        var result = await connection.ExecuteAsync("INSERT INTO presionBarometrica (idPresionBarometrica, presion, temperatura, altitud, fecha, hora) VALUES (@idPresionBarometrica, @presion, @temperatura, @altitud, @fecha, @hora)", barometricPressure);
         return result;
     }
 }

@@ -54,84 +54,78 @@
     </div>
 
     <div class="form-group">
-        <label for="sowingWeight">
-            Gramaje
+        <label>
+            Gramaje (g
         </label>
-        <NumberInput Id="sowingWeight" TValue="double" @bind-Value="Model.Gramaje"></NumberInput>
+        <NumberInput TValue="double" @bind-Value="Model.Gramaje"></NumberInput>
     </div>
-
+    
+    @if (!IsEditingSowingLine)
+    {
+        <div class="form-group">
+            <label for="sowingLine">
+                Lineas de siembra
+            </label>
+        
+            <select class="form-select" id="sowingLine" required @onchange="SelectSowingLine">
+                @foreach (var sowingLine in SowingLines)
+                {
+                    <option
+                        value="@sowingLine.LineaCultivoId"
+                        selected="@(sowingLine.LineaCultivoId == SowingLineModel.LineaCultivoId)">
+                        @sowingLine.NumeroLinea
+                    </option>
+                }
+            </select>
+        </div>
+    }
+    else
+    {
+        <div class="form-group">
+            <label for="germinationLine">
+                Linea
+            </label>
+            <NumberInput Id="germinationLine" TValue="int" @bind-Value="@SowingLineModel.NumeroLinea"></NumberInput>
+        </div>
+    }
+    
     <div class="form-group">
-        <label for="sowingMaxHeight">
-            Altura máxima
+        <label>
+            Gramaje de la linea de siembra
         </label>
-        <NumberInput Id="sowingMaxHeight" TValue="double" @bind-Value="Model.AlturaMaxima"></NumberInput>
-    </div>
-
-    <div class="form-group">
-        <label for="sowingMinHeight">
-            Altura mínima
-        </label>
-        <NumberInput Id="sowingMinHeight" TValue="double" @bind-Value="Model.AlturaMinima"></NumberInput>
-    </div>
-
-    <div class="form-group">
-        <label for="sowingMaxAmbientTemperature">
-            Temperatura ambiente máxima
-        </label>
-        <NumberInput Id="sowingMaxAmbientTemperature" TValue="int" @bind-Value="Model.TemperaturaAmbienteMaxima"></NumberInput>
-    </div>
-
-    <div class="form-group">
-        <label for="sowingMinAmbientTemperature">
-            Temperatura ambiente mínima
-        </label>
-        <NumberInput Id="sowingMinAmbientTemperature" TValue="int" @bind-Value="Model.TemperaturaAmbienteMinima"></NumberInput>
-    </div>
-
-    <div class="form-group">
-        <label for="sowingMaxAmbientHumidity">
-            Humedad ambiente máxima
-        </label>
-        <NumberInput Id="sowingMaxAmbientHumidity" TValue="int" @bind-Value="Model.HumedadAmbienteMaxima"></NumberInput>
-    </div>
-
-    <div class="form-group">
-        <label for="sowingMinAmbientHumidity">
-            Humedad ambiente mínima
-        </label>
-        <NumberInput Id="sowingMinAmbientHumidity" TValue="int" @bind-Value="Model.HumedadAmbienteMinima"></NumberInput>
-    </div>
-
-    <div class="form-group">
-        <label for="sowingMinSoilHumidity">
-            Humedad mínima de la tierra
-        </label>
-        <NumberInput Id="sowingMinSoilHumidity" TValue="int" @bind-Value="Model.HumedadMinimaTierra"></NumberInput>
-    </div>
-
-    <div class="form-group">
-        <label for="sowingMaxSoilHumidity">
-            Humedad máxima de la tierra
-        </label>
-        <NumberInput Id="sowingMaxSoilHumidity" TValue="int" @bind-Value="Model.HumedadMaximaTierra"></NumberInput>
-    </div>
-
-    <div class="form-group">
-        <label for="presionBarometricaMinima">
-            Presión barométrica mínima
-        </label>
-        <NumberInput Id="presionBarometricaMinima" TValue="int" @bind-Value="Model.PresionBarometricaMinima"></NumberInput>
-    </div>
-
-    <div class="form-group">
-        <label for="presionBarometricaMaxima">
-            Presión barométrica máxima
-        </label>
-        <NumberInput Id="presionBarometricaMaxima" TValue="int" @bind-Value="Model.PresionBarometricaMaxima"></NumberInput>
+        <NumberInput Disabled="!IsEditingSowingLine" TValue="double"  @bind-Value="SowingLineModel.Gramaje"></NumberInput>
     </div>
 
     <div class="d-flex justify-content-start gap-3">
-        <button type="submit" class="btn btn-primary mt-2" @onclick="OnSubmit">Guardar</button>
+        
+        @if (!IsEditingSowingLine)
+        {
+            <button @onclick="OnNewSowingLine" class="btn btn-outline-secondary mt-2">Nueva linea</button>
+            <button disabled="@String.IsNullOrEmpty(SowingLineModel.LineaCultivoId)" @onclick="OnEditSowingLine" class="btn btn-outline-info mt-2">Editar linea</button>
+        }
+        else
+        {
+            <button @onclick="OnSubmitSowingLine" class="btn btn-outline-success mt-2">Guardar</button>
+        }
+        
+    </div>
+    
+    <div class="form-group">
+        <label for="description">
+            Descripción
+        </label>
+        <textarea Id="description" class="form-control" TValue="string" @bind="Model.Descripcion"></textarea>
+    </div>
+    
+    @if(IsFormInvalid())
+    {
+        <div class="text-danger">
+            No hay ciclos de siembra disponibles. Por favor, agrega un ciclo de siembra antes de continuar.
+        </div>
+    }
+
+    <div class="d-flex justify-content-start gap-3">
+        <button type="submit" class="btn btn-primary mt-2" @onclick="OnSubmit" disabled="@IsFormInvalid()">Guardar</button>
         <button type="button" class="btn btn-secondary mt-2" @onclick="HideModal">Cancelar</button>
     </div>
 </div>
@@ -140,9 +134,11 @@
 #nullable enable
     // Services
     [Inject] public IMapper Mapper { get; set; } = default!;
-
+    [Inject] IGenerateIdService GenerateIdService { get; set; } = default!;
+    
     [Inject] public ISowingCycleRepository SowingCycleRepository { get; set; } = default!;
     [Inject] public ISowingRepository SowingRepository { get; set; } = default!;
+    [Inject] public ISowingLineRepository SowingLineRepository { get; set; } = default!;
     
     [Inject] public SowingCycleFormService SowingCycleFormService { get; set; } = default!;
 
@@ -152,6 +148,13 @@
 
     // Form fields
     private List<SowingCycle> SowingCycleOptions { get; set; } = new();
+    private List<SowingLine> SowingLines { get; set; } = new();
+    
+    // Sowing-line modal
+    private SowingLine SowingLineModel { get; set; } = new();
+    
+    // 
+    private bool IsEditingSowingLine { set; get; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,23 +167,97 @@
     {
         await base.OnParametersSetAsync();
 
-        if (SowingCycleFormService.Sowing is not null)
+        var sowingFormModel = SowingCycleFormService.Sowing;
+        
+        if (sowingFormModel is not null)
         {
-            Model = Mapper.Map<Sowing>(SowingCycleFormService.Sowing);
+            Model = Mapper.Map<Sowing>(sowingFormModel);
+            
+            // Reset sowingLines 
+            SowingLines.Clear();
+            var sowingLines = await SowingLineRepository.GetSowingLinesBySowingId(sowingFormModel.CultivoId);
+
+            if (!sowingLines.Any())
+            {
+                return;
+            }
+            
+            // Mark the first element as the model
+            SowingLineModel = sowingLines[0];
+            SowingLines.AddRange(sowingLines);
         }
         else
         {
             Model = new Sowing();
-            Model.CicloId = SowingCycleOptions.FirstOrDefault()?.CicloId ?? 1;
+            Model.CicloId = SowingCycleOptions.FirstOrDefault()?.CicloId ?? string.Empty;
         }
+    }
+    
+    private bool IsFormInvalid()
+    {
+        return SowingCycleOptions.Count < 1;
+    }
+    
+    private void OnEditSowingLine()
+    {
+        IsEditingSowingLine = true;
+    }
+    
+    private void OnNewSowingLine()
+    {
+        IsEditingSowingLine = true;
+        SowingLineModel = new SowingLine();
+    }
+
+    private async Task OnSubmitSowingLine()
+    {
+        var sowingLineIndex = SowingLines.FindIndex(x => x.LineaCultivoId == SowingLineModel.LineaCultivoId);
+        
+        if (sowingLineIndex >= 0)
+        {
+            var updatedSowingLine = Mapper.Map<SowingLine>(SowingLineModel);
+            
+            await SowingLineRepository.UpdateSowingLine(SowingLineModel);
+            SowingLines[sowingLineIndex] = updatedSowingLine;
+            
+            // Update the model
+            SowingLineModel = Mapper.Map<SowingLine>(SowingLineModel);
+        }
+        else
+        {
+            // Create new sowing line
+            var newSowingLine = Mapper.Map<SowingLine>(SowingLineModel);
+            
+            newSowingLine.LineaCultivoId = GenerateIdService.GenerateId();
+            newSowingLine.CultivoId = Model.CultivoId;
+            
+            await SowingLineRepository.AddSowingLine(newSowingLine);
+            SowingLines.Add(Mapper.Map<SowingLine>(newSowingLine));
+            
+            // Update the model
+            SowingLineModel = Mapper.Map<SowingLine>(newSowingLine);
+        }
+        
+        IsEditingSowingLine = false;
     }
 
     private void SelectSowingCycle(ChangeEventArgs e)
     {
         if (e.Value is not null)
         {
-            Model.CicloId = int.Parse(e.Value.ToString());
+            Model.CicloId = e.Value.ToString();
         }
+    }
+
+    private void SelectSowingLine(ChangeEventArgs e)
+    {
+        if (e.Value is null) return;
+        
+        var selectedSowingLine = SowingLines.Find(x => x.LineaCultivoId == e.Value.ToString());
+
+        if (selectedSowingLine is null) return;
+
+        SowingLineModel = selectedSowingLine;
     }
 
     private async Task OnSubmit()
@@ -199,6 +276,7 @@
         /*
          * Otherwise, we are adding a new sowing
          */
+        Model.CultivoId = GenerateIdService.GenerateId();
         var newSowing = await SowingRepository.AddSowing(Model);
         
         // Reset form

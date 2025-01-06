@@ -2,8 +2,9 @@
 
 public class Sowing : ICloneable
 {
-    public int CultivoId { get; set; }
-    public int CicloId { get; set; }
+    public string CultivoId { get; set; }
+    public string Descripcion { get; set; } = string.Empty;
+    public string CicloId { get; set; }
     public int Ciclo { get; set; }
     public string NombreCultivo { get; set; } = string.Empty;
     public int Germinacion { get; set; }
@@ -21,6 +22,12 @@ public class Sowing : ICloneable
     public int HumedadMaximaTierra { get; set; }
     public int PresionBarometricaMaxima { get; set; }
     public int PresionBarometricaMinima { get; set; }
+    
+    // Calculated fields
+    // Format like: January 1, 2021
+    public string FechaSiembraFormatted => FechaSiembra.ToString("MMMM dd, yyyy");
+    public string FechaCosechaFormatted => FechaCosecha.ToString("MMMM dd, yyyy");
+    public int DuracionCiclo => (FechaCosecha - FechaSiembra).Days;
     
     public object Clone()
     {

@@ -1,6 +1,7 @@
 using Dapper;
-using GestionHortalizasApp.entities;
+using MonitoreoHortalizasApp.entities;
 using Microsoft.Extensions.Configuration;
+using MonitoreoHortalizasApp.Entities;
 using MySql.Data.MySqlClient;
 
 namespace MonitoreoHortalizasApp.Services;
@@ -11,7 +12,7 @@ public interface IValveRepository
     Task<int> AddReading(Valve barometricPressure);
     
     Task<IEnumerable<Valve>> GetManualWateringReadings();
-    Task<int> AddManualWateringReading(Valve barometricPressure);
+    Task<int> AddManualWateringReading(ManualWatering barometricPressure);
 }
 
 public class ValveRepository: IValveRepository
@@ -35,7 +36,7 @@ public class ValveRepository: IValveRepository
     public async Task<int> AddReading(Valve waterFlowReading)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.ExecuteAsync("INSERT INTO valvula (fechaEncendido, fechaApagado, volumen, cultivoId) VALUES (@fechaEncendido, @fechaApagado, @volumen, @cultivoId)", waterFlowReading);
+        var result = await connection.ExecuteAsync("INSERT INTO valvula (idValvula, fechaEncendido, fechaApagado, volumen, cultivoId) VALUES (@idValvula, @fechaEncendido, @fechaApagado, @volumen, @cultivoId)", waterFlowReading);
         return result;
     }
     
@@ -48,10 +49,10 @@ public class ValveRepository: IValveRepository
         return result;
     }
     
-    public async Task<int> AddManualWateringReading(Valve waterFlowReading)
+    public async Task<int> AddManualWateringReading(ManualWatering waterFlowReading)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.ExecuteAsync("INSERT INTO riegoManual (fechaEncendido, fechaApagado, volumen, cultivoId) VALUES (@fechaEncendido, @fechaApagado, @volumen, @cultivoId)", waterFlowReading);
+        var result = await connection.ExecuteAsync("INSERT INTO riegoManual (idRiegoManual, fechaEncendido, fechaApagado, volumen, cultivoId) VALUES (@idRiegoManual, @fechaEncendido, @fechaApagado, @volumen, @cultivoId)", waterFlowReading);
         return result;
     }
 }

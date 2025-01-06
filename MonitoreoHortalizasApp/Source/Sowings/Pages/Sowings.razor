@@ -1,8 +1,8 @@
 ﻿@page "/Sowings"
+@using AutoMapper
 @using MonitoreoHortalizasApp.entities
 @using MonitoreoHortalizasApp.Services
 @using MonitoreoHortalizasApp.Source.SowingCycles.Services
-@using IMapper = AutoMapper.IMapper
 
 <TabHeader TableTitle="Registro de cultivos por ciclo"/>
 
@@ -20,38 +20,49 @@
       TItem="Sowing"
       Class="table table-hover table-striped border"
       Data="SowingRegistries"
-      Height="500"
+      Height="65"
       FixedHeader="true"
       AllowFiltering="true"
-      Unit="Unit.Px"
+      Unit="Unit.Vh"
       Responsive="true"
       AllowRowClick="true"
       AllowPaging="true"
-      PageSize="6"
+      PageSize="9"
       OnRowClick="ShowUpdateLogModal">
     <GridColumns>
+        
+        <GridColumn TItem="Sowing"
+                    HeaderText="ID"
+                    PropertyName="CultivoId">
+            @context.CultivoId
+        </GridColumn>
+
         <GridColumn
             TItem="Sowing"
             HeaderText="Nombre del cultivo"
             PropertyName="NombreCultivo">
             @context.NombreCultivo
         </GridColumn>
-        
-        <!-- CicloId -->
+
         <GridColumn TItem="Sowing" HeaderText="Ciclo de siembra" PropertyName="Ciclo" SortKeySelector="item => item.Ciclo">
             @context.Ciclo
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Germinación total" PropertyName="Germinacion" SortKeySelector="item => item.Germinacion">
-            @context.Germinacion
+            @context.Germinacion Semillas
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Fecha de siembra" PropertyName="FechaSiembra" SortKeySelector="item => item.FechaSiembra">
-            @context.FechaSiembra
+            @context.FechaSiembraFormatted
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Fecha de cosecha" PropertyName="FechaCosecha" SortKeySelector="item => item.FechaCosecha">
-            @context.FechaCosecha
+            @context.FechaCosechaFormatted
+        </GridColumn>
+        
+        <!-- Duración del ciclo -->
+        <GridColumn TItem="Sowing" HeaderText="Duración del ciclo" PropertyName="DuracionCiclo" SortKeySelector="item => item.DuracionCiclo">
+            @context.DuracionCiclo Dias
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Tipo de riego" PropertyName="TipoRiego" SortKeySelector="item => item.TipoRiego">
@@ -59,53 +70,56 @@
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Gramaje" PropertyName="Gramaje" SortKeySelector="item => item.Gramaje">
-            @context.Gramaje
+            @context.Gramaje Gramos
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Altura máxima" PropertyName="AlturaMaxima" SortKeySelector="item => item.AlturaMaxima">
-            @context.AlturaMaxima
+            @context.AlturaMaxima M
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Altura mínima" PropertyName="AlturaMinima" SortKeySelector="item => item.AlturaMinima">
-            @context.AlturaMinima
+            @context.AlturaMinima M
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Temperatura ambiente máxima" PropertyName="TemperaturaAmbienteMaxima" SortKeySelector="item => item.TemperaturaAmbienteMaxima">
-            @context.TemperaturaAmbienteMaxima
+            @context.TemperaturaAmbienteMaxima °C
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Temperatura ambiente mínima" PropertyName="TemperaturaAmbienteMinima" SortKeySelector="item => item.TemperaturaAmbienteMinima">
-            @context.TemperaturaAmbienteMinima
+            @context.TemperaturaAmbienteMinima °C
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Humedad ambiente máxima" PropertyName="HumedadAmbienteMaxima" SortKeySelector="item => item.HumedadAmbienteMaxima">
-            @context.HumedadAmbienteMaxima
+            @context.HumedadAmbienteMaxima %
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Humedad ambiente mínima" PropertyName="HumedadAmbienteMinima" SortKeySelector="item => item.HumedadAmbienteMinima">
-            @context.HumedadAmbienteMinima
+            @context.HumedadAmbienteMinima %
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Humedad mínima de la tierra" PropertyName="HumedadMinimaTierra" SortKeySelector="item => item.HumedadMinimaTierra">
-            @context.HumedadMinimaTierra
+            @context.HumedadMinimaTierra %
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Humedad máxima de la tierra" PropertyName="HumedadMaximaTierra" SortKeySelector="item => item.HumedadMaximaTierra">
-            @context.HumedadMaximaTierra
+            @context.HumedadMaximaTierra %
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Humedad mínima de la tierra" PropertyName="HumedadMinimaTierra" SortKeySelector="item => item.HumedadMinimaTierra">
-            @context.HumedadMinimaTierra
+            @context.HumedadMinimaTierra %
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Presión barométrica máxima" PropertyName="PresionBarometricaMaxima" SortKeySelector="item => item.PresionBarometricaMaxima">
-            @context.PresionBarometricaMaxima
+            @context.PresionBarometricaMaxima hPa
         </GridColumn>
 
         <GridColumn TItem="Sowing" HeaderText="Presión barométrica mínima" PropertyName="PresionBarometricaMinima" SortKeySelector="item => item.PresionBarometricaMinima">
-            @context.PresionBarometricaMinima
+            @context.PresionBarometricaMinima hPa
         </GridColumn>
 
+        <GridColumn TItem="Sowing" HeaderText="Descripción" PropertyName="Descripcion" SortKeySelector="item => item.Descripcion">
+            @context.Descripcion
+        </GridColumn>
     </GridColumns>
 </Grid>
 
@@ -131,7 +145,6 @@
     
     private async Task ShowAddNewSowingModal()
     {
-        Console.WriteLine("ShowAddNewSowingModal");
         var parameters = new Dictionary<string, object>
         {
             { "OnHideModal", EventCallback.Factory.Create(this, (Sowing? e) => OnHideModal(e)) },

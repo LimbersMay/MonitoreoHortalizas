@@ -25,7 +25,9 @@
                 Min="MinDate"
                 Max="MaxDate"
                 Disabled="@DisabledEndDate"
-                @bind-Value="EndDate"
+                Value="EndDate"
+                ValueExpression="() => EndDate"
+                ValueChanged="(value) => EndDateChanged(value)"
                 />
         </label>
     </div>

@@ -1,0 +1,90 @@
+﻿@using AutoMapper
+@using MonitoreoHortalizasApp.Entities
+@using MonitoreoHortalizasApp.Services
+@using MonitoreoHortalizasApp.Source.SowingCycles.Services
+
+<div class="d-flex flex-column gap-2">
+    <div class="form-group">
+        <label for="germinationLine">
+            Linea
+        </label>
+        <NumberInput Id="germinationLine" TValue="int" @bind-Value="@Model.NumeroLinea"></NumberInput>
+    </div>
+
+    <div class="form-group">
+        <label>
+            Gramaje (g)
+        </label>
+        <NumberInput TValue="double" @bind-Value="Model.Gramaje"></NumberInput>
+    </div>
+
+    <div class="d-flex justify-content-start gap-3">
+        <button type="submit" @onclick="OnSubmit" class="btn btn-outline-primary mt-2">Guardar</button>
+        <button type="button" @onclick="OnHideModal" class="btn btn-outline-secondary mt-2">Cancelar</button>
+    </div>
+</div>
+
+
+@code {
+    // Services
+    [Inject] public IMapper Mapper { get; set; } = default!;
+    [Inject] public SowingCycleFormService SowingCycleFormService { get; set; } = default!;
+
+    [Inject] public ISowingLineRepository SowingLineRepository { get; set; } = default!;
+    [Inject] IGenerateIdService GenerateIdService { get; set; } = default!;
+    
+    [Parameter] public EventCallback<SowingLine> OnHideLineModal { get; set; }
+    [Parameter, EditorRequired] public string SowingId { get; set; }
+    
+    private int Line { get; set; }
+    private double Gramaje { get; set; }
+
+    private SowingLine Model { get; set; } = new();
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var sowingLineFormModel = SowingCycleFormService.SowingLine;
+
+        if (sowingLineFormModel is not null)
+        {
+            Model = Mapper.Map<SowingLine>(sowingLineFormModel);
+        }
+        else
+        {
+            Model = new();
+        }
+    }
+
+    private async Task OnSubmit()
+    {
+        /*
+         * When the user opens the modal, the SowingLine attribute in SowingCycleFormService is set
+         * If the user is updating a sowingLine, it won't be null, otherwise, the user is creating a new sowingLine
+         */
+
+        if (SowingCycleFormService.SowingLine is not null)
+        {
+            SowingCycleFormService.ResetSowingLineParameter();
+            var resultUpdate = await SowingLineRepository.UpdateSowingLine(Model);
+            await OnHideLineModal.InvokeAsync(resultUpdate);
+            return;
+        }
+
+        Model.LineaCultivoId = GenerateIdService.GenerateId();
+        Model.CultivoId = SowingId;
+
+        var newSowingLine = await SowingLineRepository.AddSowingLine(Model);
+
+        // Reset form
+        SowingCycleFormService.ResetSowingLineParameter();
+        await OnHideLineModal.InvokeAsync(newSowingLine);
+    }
+
+    private async Task OnHideModal()
+    {
+        SowingCycleFormService.ResetSowingLineParameter();
+        await OnHideLineModal.InvokeAsync();
+    }
+}

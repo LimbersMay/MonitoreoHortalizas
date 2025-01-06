@@ -9,7 +9,7 @@ public interface ISowingCycleRepository
 {
     Task<List<SowingCycle>> GetSowingCycles();
     Task<SowingCycle> GetSowingCycle(int id);
-    Task<int> AddSowingCycle(SowingCycle sowingCycle);
+    Task<string> AddSowingCycle(SowingCycle sowingCycle);
     Task<SowingCycle> UpdateSowingCycle(SowingCycle sowingCycle);
 }
 
@@ -19,7 +19,7 @@ public class SowingCycleRepository: ISowingCycleRepository
     
     private readonly string _getSowingCycles = "SELECT * FROM cicloSiembra ORDER BY ciclo";
     private readonly string _getSowingCycle = "SELECT * FROM cicloSiembra WHERE cicloId = {0}";
-    private readonly string _addSowingCycle = "INSERT INTO cicloSiembra (ciclo, descripcion, fechaInicio, fechaFin) VALUES (@Ciclo, @Descripcion, @FechaInicio, @FechaFin)";
+    private readonly string _addSowingCycle = "INSERT INTO cicloSiembra (cicloId, ciclo, descripcion, fechaInicio, fechaFin) VALUES (@cicloId, @Ciclo, @Descripcion, @FechaInicio, @FechaFin)";
     private readonly string _updateSowingCycle = "UPDATE cicloSiembra SET ciclo = @Ciclo, descripcion = @Descripcion, fechaInicio = @FechaInicio, fechaFin = @FechaFin WHERE cicloId = @CicloId";
     
     public SowingCycleRepository(IConfiguration configuration)
@@ -41,12 +41,12 @@ public class SowingCycleRepository: ISowingCycleRepository
         return result;
     }
     
-    public async Task<int> AddSowingCycle(SowingCycle sowingCycle)
+    public async Task<string> AddSowingCycle(SowingCycle sowingCycle)
     {
         await using var connection = new MySqlConnection(_connectionString);
         await connection.ExecuteAsync(_addSowingCycle, sowingCycle);
         
-        return  await connection.ExecuteScalarAsync<int>("SELECT LAST_INSERT_ID()");
+        return  await connection.ExecuteScalarAsync<string>("SELECT LAST_INSERT_ID()");
     }
     
     public async Task<SowingCycle> UpdateSowingCycle(SowingCycle sowingCycle)

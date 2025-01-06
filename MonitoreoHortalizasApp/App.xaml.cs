@@ -33,9 +33,13 @@ namespace MonitoreoHortalizasApp
 
         private void ConfigureServices(ServiceCollection services)
         {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+
+            Console.WriteLine($"Environment: {environment}");
+            
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                .AddJsonFile($"appsettings.{environment}.json", optional: true);
 
             Configuration = builder.Build();
             
@@ -64,6 +68,9 @@ namespace MonitoreoHortalizasApp
             services.AddTransient<IGerminationLogRepository, GerminationLogRepository>();
             services.AddTransient<ISowingCycleRepository, SowingCycleRepository>();
             services.AddTransient<ISowingRepository, SowingRepository>();
+            services.AddTransient<ISowingLineRepository, SowingLineRepository>();
+            services.AddTransient<IGenerateIdService, GenerateIdService>();
+            services.AddTransient<ILogRepository, LogRepository>();
             services.AddAutoMapper(typeof(AutoMapperProfiles));
             services.AddTransient<Runner>();
             

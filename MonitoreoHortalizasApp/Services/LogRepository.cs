@@ -4,18 +4,18 @@ namespace MonitoreoHortalizasApp.Services;
 
 public interface ILogRepository
 {
-    IEnumerable<string> GetAllLogs();
+    List<string> GetAllLogs();
 }
 
 public class LogRepository: ILogRepository
 {
     private readonly string _logFilePath = "./logs/appLogs.log";
 
-    public IEnumerable<string> GetAllLogs()
+    public List<string> GetAllLogs()
     {
         if (File.Exists(_logFilePath))
         {
-            return File.ReadAllLines(_logFilePath);
+            return File.ReadAllLines(_logFilePath).ToList();
         }
         
         return new List<string>();

@@ -17,12 +17,12 @@
       TItem="GerminationLog"
       Class="table table-hover table-striped border"
       Data="GerminationLogsReadings"
-      Height="32"
+      Height="65"
       FixedHeader="true"
       AllowFiltering="true"
-      PageSize="10"
+      PageSize="9"
       AllowPaging="true"
-      Unit="Unit.Rem"
+      Unit="Unit.Vh"
       Responsive="true"
       AllowRowClick="true"
       OnRowClick="OnRowClick">
@@ -31,13 +31,16 @@
                     HeaderText="Fecha de registro"
                     PropertyName="FechaRegistro"
                     SortKeySelector="item => item.FechaRegistro">
-            @context.FechaRegistro
+            @context.FechaRegistroFormatted
         </GridColumn>
         <GridColumn TItem="GerminationLog" HeaderText="Nombre de la cama" PropertyName="NombreCama" SortKeySelector="item => item.NombreCama">
             @context.NombreCama
         </GridColumn>
         <GridColumn TItem="GerminationLog" HeaderText="Ciclo de siembra" PropertyName="Ciclo" SortKeySelector="item => item.Ciclo">
             @context.Ciclo
+        </GridColumn>
+        <GridColumn TItem="GerminationLog" HeaderText="Linea de germinación" PropertyName="Linea" SortKeySelector="item => item.Linea">
+            @context.Linea
         </GridColumn>
         <GridColumn TItem="GerminationLog" HeaderText="Temperatura del ambiente" PropertyName="TemperaturaAmbiente" SortKeySelector="item => item.TemperaturaAmbiente">
             @context.TemperaturaAmbiente °C
@@ -62,9 +65,6 @@
         </GridColumn>
         <GridColumn TItem="GerminationLog" HeaderText="Altura mínima hojas" PropertyName="HojasAlturaMinima" SortKeySelector="item => item.HojasAlturaMinima">
             @context.HojasAlturaMinima cm
-        </GridColumn>
-        <GridColumn TItem="GerminationLog" HeaderText="Linea" PropertyName="Linea" SortKeySelector="item => item.Linea">
-            @context.Linea
         </GridColumn>
         <GridColumn TItem="GerminationLog" HeaderText="Observaciones" PropertyName="Observaciones" SortKeySelector="item => item.Observaciones">
             @context.Observaciones
@@ -92,18 +92,14 @@
         
         GerminationLogsReadings.AddRange(await GerminationLogRepository.GetGerminationLogs());
     }
-
-    public async Task Refresh()
-    {
-        await _grid.RefreshDataAsync();
-    }
-
+    
     private async Task OnRowClick(GridRowEventArgs<GerminationLog> args)
     {
         var parameters = new Dictionary<string, object>();
         parameters.Add("OnHideModal", EventCallback.Factory.Create(this, (GerminationLog e) => OnHideModal(e)));
         SowingCycleFormService.GerminationLog = args.Item;
         await _modal.ShowAsync<AddNewGerminationComponent>("Editar registro de germinación", parameters:parameters);
+        
     }
     
     private async Task ShowAddNewSowingModal()
@@ -116,6 +112,9 @@
     
     private async Task OnHideModal(GerminationLog? germinationLog)
     {
+        // Reset the form
+        SowingCycleFormService.ResetGerminationLogParameter();
+        
         if (germinationLog is null)
         {
             await _modal.HideAsync();
@@ -130,7 +129,7 @@
         }
         else
         {
-            GerminationLogsReadings.Add(Mapper.Map<GerminationLog>(germinationLog));
+            GerminationLogsReadings.Insert(0, Mapper.Map<GerminationLog>(germinationLog));
         }
 
         await _grid.RefreshDataAsync();

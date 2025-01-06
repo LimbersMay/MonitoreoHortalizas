@@ -1,7 +1,8 @@
-namespace GestionHortalizasApp.entities;
+namespace MonitoreoHortalizasApp.entities;
 
 public class Temperature
 {
+    public string idTemperatura { get; set; }
     public float Temperatura { get; set; }
     public int Humedad { get; set; }
     public DateTime Fecha { get; set; }

@@ -1,8 +1,55 @@
 ﻿@page "/ArduinoAndSystemLogs"
+@using MonitoreoHortalizasApp.models
 
 <TabHeader TableTitle="Logs del sistema y del arduino" />
 
+<div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;">
+    Logs del arduino
+</div>
 
-@code {
-    
-}
+<Grid
+    @ref="_grid"
+    TItem="ArduinoSerialLog"
+    Class="table table-hover table-striped border"
+    Data="ArduinoSerialLogs"
+    Height="245"
+    FixedHeader="true"
+    AllowSorting="true"
+    Unit="Unit.Px"
+    Responsive="true">
+    <GridColumns>
+        <GridColumn
+            TItem="ArduinoSerialLog"
+            HeaderText="Fecha"
+            PropertyName="Date"
+            SortKeySelector="item => item.Date"
+        >
+            @context.Date
+        </GridColumn>
+        <GridColumn TItem="ArduinoSerialLog" HeaderText="Log" PropertyName="Log" SortKeySelector="item => item.Log">
+            @context.Log
+        </GridColumn>
+    </GridColumns>
+</Grid>
+
+<div style="background-color: #1250b3; color: white; text-align: center; font-size: 1.5em; padding: 5px;">
+    Logs del sistema
+</div>
+
+<Grid
+    @ref="_grid"
+    TItem="ArduinoSerialLog"
+    Class="table table-hover table-striped border"
+    Data="SystemLogs"
+    Height="245"
+    FixedHeader="true"
+    AllowSorting="true"
+    Unit="Unit.Px"
+    Responsive="true">
+    <GridColumns>
+        <GridColumn TItem="ArduinoSerialLog" HeaderText="Log" PropertyName="Log" SortKeySelector="item => item.Log">
+            @context.Log
+        </GridColumn>
+    </GridColumns>
+</Grid>
+

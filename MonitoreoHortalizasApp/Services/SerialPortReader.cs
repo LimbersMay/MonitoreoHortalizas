@@ -47,6 +47,7 @@ public class SerialPortReader : ISerialPortReader
         _logger = logger;
 
         var primarySerialPortTimer = new System.Timers.Timer(120000);
+        primarySerialPortTimer.Elapsed += PrimarySerialPortTimerCallback;
 
         primarySerialPortTimer.AutoReset = true;
         primarySerialPortTimer.Enabled = true;
@@ -133,6 +134,7 @@ public class SerialPortReader : ISerialPortReader
 
         var lineRead = String.Empty;
 
+
         try
         {
             lineRead = serialPort.ReadLine().Trim();
@@ -169,6 +171,7 @@ public class SerialPortReader : ISerialPortReader
         try
         {
             lineRead = serialPort.ReadLine().Trim();
+            Console.WriteLine("Data received from secondary serial port" + lineRead);
         }
         catch (TimeoutException exception)
         {

@@ -3,7 +3,6 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
 	  <RootNamespace>MonitoreoHortalizasApp</RootNamespace>
@@ -25,6 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="bin\Debug\net8.0-windows\logs\" />
+    <Folder Include="bin\Debug\net8.0-windows\NewFolder\" />
     <Folder Include="Source\ArduinoAndSystemLogs\Components\" />
   </ItemGroup>
 

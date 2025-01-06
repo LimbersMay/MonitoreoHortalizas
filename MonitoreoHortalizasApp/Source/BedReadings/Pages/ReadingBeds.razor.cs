@@ -1,4 +1,4 @@
-﻿using GestionHortalizasApp.entities;
+﻿using MonitoreoHortalizasApp.entities;
 using MonitoreoHortalizasApp.Events.Sensors;
 using MonitoreoHortalizasApp.Models;
 using Microsoft.AspNetCore.Components;

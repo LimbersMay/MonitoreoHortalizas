@@ -1,4 +1,5 @@
 ﻿@page "/SowingCycles"
+@using AutoMapper
 @using MonitoreoHortalizasApp.Entities
 @using MonitoreoHortalizasApp.Services
 @using MonitoreoHortalizasApp.services.Events
@@ -40,10 +41,10 @@
             @context.Ciclo
         </GridColumn>
         <GridColumn TItem="SowingCycle" HeaderText="Fecha de inicio" PropertyName="FechaInicio" SortKeySelector="item => item.FechaInicio">
-            @context.FechaInicio
+            @context.FechaInicioFormatted
         </GridColumn>
         <GridColumn TItem="SowingCycle" HeaderText="Fecha de fin" PropertyName="FechaFin" SortKeySelector="item => item.FechaFin">
-            @context.FechaFin
+            @context.FechaFinFormatted
         </GridColumn>
         <GridColumn TItem="SowingCycle" HeaderText="Descripción" PropertyName="Descripcion" SortKeySelector="item => item.Descripcion">
             @context.Descripcion
@@ -62,6 +63,7 @@
     public List<SowingCycle> SowingCyclesLogs { get; set; } = new();
 
     [Inject] private ISowingCycleRepository SowingCycleRepository { get; set; } = default!;
+    [Inject] private IMapper Mapper { get; set; } = default!;
     [Inject] private SowingCycleFormService SowingCycleFormService { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
@@ -103,26 +105,12 @@
         // Check if exists
         if (SowingCyclesLogs.Any(x => x.CicloId == sowingCycle.CicloId))
         {
-            SowingCyclesLogs.RemoveAll(x => x.CicloId == sowingCycle.CicloId);
-            SowingCyclesLogs.Add(new SowingCycle
-            {
-                Ciclo = sowingCycle.Ciclo,
-                CicloId = sowingCycle.CicloId,
-                FechaInicio = sowingCycle.FechaInicio,
-                FechaFin = sowingCycle.FechaFin,
-                Descripcion = sowingCycle.Descripcion
-            });
+            var index = SowingCyclesLogs.FindIndex(x => x.CicloId == sowingCycle.CicloId);
+            SowingCyclesLogs[index] = Mapper.Map<SowingCycle>(sowingCycle);
         }
         else
         {
-            SowingCyclesLogs.Add(new SowingCycle
-            {
-                Ciclo = sowingCycle.Ciclo,
-                CicloId = sowingCycle.CicloId,
-                FechaInicio = sowingCycle.FechaInicio,
-                FechaFin = sowingCycle.FechaFin,
-                Descripcion = sowingCycle.Descripcion
-            });
+            SowingCyclesLogs.Add(Mapper.Map<SowingCycle>(sowingCycle));
         }
 
         await _grid.RefreshDataAsync();

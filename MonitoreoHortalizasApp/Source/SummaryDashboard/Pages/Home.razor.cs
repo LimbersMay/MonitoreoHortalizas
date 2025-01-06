@@ -1,6 +1,7 @@
 ﻿using BlazorBootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using MonitoreoHortalizasApp.Entities;
 using MonitoreoHortalizasApp.Events.Errors;
 using MonitoreoHortalizasApp.Events.Sensors;
 using MonitoreoHortalizasApp.Events.Serial;
@@ -56,7 +57,9 @@ public partial class Home: ComponentBase, IAsyncDisposable
         
         EventAggregator.Subscribe<HumidityEvent>(OnHumidityEventReceived);
         EventAggregator.Subscribe<PrimarySerialDataEvent>(OnArduinoSerialLogReceived);
-        EventAggregator.Subscribe<ValveReading>(OnReceiveWaterFlowEvent);
+        
+        EventAggregator.Subscribe<ManualWatering>(OnManualWateringReceived);
+        EventAggregator.Subscribe<AutomaticWatering>(OnAutomaticWateringReceived);
     }
     
     private async Task ReloadDataAsync()
@@ -91,6 +94,7 @@ public partial class Home: ComponentBase, IAsyncDisposable
     
     private async void StartDateChanged(DateTime? startDate)
     {
+        // For the date like: 2024-09-06
         
         if (startDate is null || !startDate.HasValue)
         {
@@ -111,6 +115,19 @@ public partial class Home: ComponentBase, IAsyncDisposable
 
         StartDate = startDate.Value;
         MinDate = startDate.Value;
+
+        await ReloadDataAsync();
+    }
+    
+    private async void EndDateChanged(DateTime? endDate)
+    {
+        if (endDate is null || !endDate.HasValue)
+        {
+            EndDate = DateTime.Now.Date;
+            return;
+        }
+
+        EndDate = endDate.Value;
 
         await ReloadDataAsync();
     }
@@ -163,29 +180,45 @@ public partial class Home: ComponentBase, IAsyncDisposable
 
         await _grid.RefreshDataAsync();
     }
-
-    private void OnReceiveWaterFlowEvent(ValveReading @event)
+    
+    private async void OnManualWateringReceived(ManualWatering @event)
     {
         switch (@event.CultivoId)
         {
-            case 1:
-                Bed1WaterAmount += @event.Volumen;
-                break;
-            case 2:
-                Bed2WaterAmount += @event.Volumen;
-                break;
-            case 3:
+            case "739e342b-9d6a-4dc5-a76d-01db4fdf4b15":
                 Bed3WaterAmount += @event.Volumen;
+                Console.WriteLine("Bed 3 water amount: " + @event.Volumen);
                 break;
-            case 4:
+            case "7b81ada6-80a4-4977-9496-23fa853dbdd3":
                 Bed4WaterAmount += @event.Volumen;
+                Console.WriteLine("Bed 4 water amount: " + @event.Volumen);
                 break;
         }
+        
+        await InvokeAsync(StateHasChanged);
     }
-
+    
+    private async void OnAutomaticWateringReceived(AutomaticWatering @event)
+    {
+        switch (@event.CultivoId)
+        {
+            case "7523d7e6-ed0c-46df-837e-8f7afd9c037a":
+                Bed1WaterAmount += @event.Volumen;
+                Console.WriteLine("Bed 1 water amount: " + @event.Volumen);
+                break;
+            case "82964903-513d-4c73-891e-f3da0a1cb732":
+                Bed2WaterAmount += @event.Volumen;
+                Console.WriteLine("Bed 4 water amount: " + @event.Volumen);
+                break;
+        }
+        
+        await InvokeAsync(StateHasChanged);
+    }
+    
     public async ValueTask DisposeAsync()
     {
         EventAggregator.Unsubscribe<HumidityEvent>(OnHumidityEventReceived);
         await Task.CompletedTask;
     }
+
 }

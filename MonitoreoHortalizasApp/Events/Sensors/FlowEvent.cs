@@ -1,4 +1,4 @@
-using GestionHortalizasApp.entities;
+using MonitoreoHortalizasApp.entities;
 
 namespace MonitoreoHortalizasApp.Events.Sensors;
 

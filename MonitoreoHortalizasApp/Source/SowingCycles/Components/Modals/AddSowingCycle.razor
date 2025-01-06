@@ -36,6 +36,9 @@
 
 @code {
     #nullable enable
+    // Helper methods
+    [Inject] IGenerateIdService GenerateIdService { get; set; } = default!;
+    
     // Form service
     [Inject] public SowingCycleFormService SowingCycleFormService { get; set; } = default!;
     
@@ -87,8 +90,8 @@
         }
         else
         {
-            var newSowingCycleId = await SowingCycleRepository.AddSowingCycle(Model);
-            Model.CicloId = newSowingCycleId;
+            Model.CicloId = GenerateIdService.GenerateId();
+            await SowingCycleRepository.AddSowingCycle(Model);
         }
         
         await OnHideModal.InvokeAsync(Model);

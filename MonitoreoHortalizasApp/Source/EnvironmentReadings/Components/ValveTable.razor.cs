@@ -1,5 +1,5 @@
 ﻿using BlazorBootstrap;
-using GestionHortalizasApp.entities;
+using MonitoreoHortalizasApp.entities;
 using MonitoreoHortalizasApp.Services;
 using Microsoft.AspNetCore.Components;
 

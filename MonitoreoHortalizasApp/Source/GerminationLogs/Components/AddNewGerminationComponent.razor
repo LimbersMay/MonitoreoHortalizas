@@ -20,7 +20,7 @@
         </select>
     </div>
     <div class="form-group">
-        <label for="germinationPercentage">Cultivo</label>
+        <label for="germinationPercentage">Cultivo<span class="text-danger">*</span></label>
         <select class="form-select" id="germinationPercentage" required @onchange="SelectGerminationBed">
             @foreach (var crop in SowingOptions)
             {
@@ -69,8 +69,17 @@
         <textarea class="form-control" id="germinationPercentage" rows="3" @bind="@Model.Observaciones"></textarea>
     </div>
     
-    <button type="submit" class="btn btn-primary mt-2" @onclick="OnSubmit">Guardar</button>
-    <button type="button" class="btn btn-secondary mt-2" @onclick="HideModal">Cancelar</button>
+    @if(IsFormInvalid())
+    {
+        <span class="text-danger fw-bold">
+            No hay cultivos disponibles.
+        </span>
+    }
+    
+    <div class="d-flex justify-content-start gap-3">
+        <button type="submit" class="btn btn-primary mt-2" @onclick="OnSubmit" disabled="@IsFormInvalid()">Guardar</button>
+        <button type="button" class="btn btn-secondary mt-2" @onclick="HideModal">Cancelar</button>
+    </div>
 </div>
 
 @code {
@@ -79,6 +88,7 @@
     // Services
     [Inject] IEventAggregator EventAggregator { get; set; } = default!;
     [Inject] IMapper Mapper { get; set; } = default!;
+    [Inject] IGenerateIdService GenerateIdService { get; set; } = default!;
     
     [Inject] ISowingRepository SowingRepository { get; set; } = default!;
     [Inject] ISowingCycleRepository SowingCycleRepository { get; set; } = default!;
@@ -86,7 +96,7 @@
     [Inject] SowingCycleFormService SowingCycleFormService { get; set; } = default!;
     
     // Form fields
-    private int SelectedSowingCycleId { get; set; }
+    private string SelectedSowingCycleId { get; set; }
     
     private List<Sowing> SowingOptions { get; set; } = new();
     private List<SowingCycle> SowingCycleOptions { get; set; } = new();
@@ -96,12 +106,16 @@
     // Parameters
     [Parameter] public EventCallback<GerminationLog> OnHideModal { get; set; }
     
+    private bool IsFormInvalid()
+    {
+        return SowingOptions.Count < 1;
+    }
+    
     private void SelectGerminationBed(ChangeEventArgs e)
     {
         if (e.Value is not null)
         {
-            Console.WriteLine("SelectGerminationBed" + e.Value);
-            Model.CultivoId = int.Parse(e.Value.ToString());
+            Model.CultivoId = e.Value.ToString();
         }
     }
     
@@ -109,7 +123,7 @@
     {
         if (e.Value is not null)
         {
-            var cicleId = int.Parse(e.Value.ToString());
+            var cicleId = e.Value.ToString();
             var newSowingOptions = await SowingRepository.GetSowingsByCicleId(cicleId);
             
             SowingOptions.Clear();
@@ -135,6 +149,7 @@
         }
         else
         {
+            Model = new GerminationLog();
             Model.CultivoId = SowingOptions.First().CultivoId;
         }
     }
@@ -144,6 +159,11 @@
         await base.OnInitializedAsync();
         
         var sowingCycles = await SowingCycleRepository.GetSowingCycles();
+
+        if (sowingCycles.Count < 1)
+        {
+            return;
+        }
         
         // Initialize the select options
         SowingCycleOptions.AddRange(sowingCycles);
@@ -155,7 +175,6 @@
     
     private async Task HideModal()
     {
-        SowingCycleFormService.ResetGerminationLogParameter();
         await OnHideModal.InvokeAsync();
     }
     
@@ -164,11 +183,7 @@
         if (SowingCycleFormService.GerminationLog is not null)
         {
             // Update the germination log
-            Console.WriteLine(Model.CultivoId);
             var resultUpdate = await GerminationLogRepository.UpdateGerminationLog(Model);
-            
-            // Reset the germination log parameter
-            SowingCycleFormService.ResetGerminationLogParameter();
             
             // Hide the modal
             await OnHideModal.InvokeAsync(resultUpdate);
@@ -177,10 +192,8 @@
         }
         
         // Add a new germination log
+        Model.RegistroGerminacionId = GenerateIdService.GenerateId();
         var newGerminationLog = await GerminationLogRepository.AddGerminationLog(Model);
-        
-        // Reset the germination log parameter
-        SowingCycleFormService.ResetGerminationLogParameter();
         
         // Hide the modal
         await OnHideModal.InvokeAsync(newGerminationLog);

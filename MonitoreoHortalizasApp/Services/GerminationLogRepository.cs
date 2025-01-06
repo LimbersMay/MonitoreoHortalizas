@@ -51,7 +51,8 @@ public class GerminationLogRepository: IGerminationLogRepository
     public async Task<List<GerminationLog>> GetGerminationLogs()
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.QueryAsync<GerminationLog>(SqlGetGerminationLogs);
+        var queryWithOrderBy = SqlGetGerminationLogs + " ORDER BY rg.fechaRegistro DESC";
+        var result = await connection.QueryAsync<GerminationLog>(queryWithOrderBy);
         return result.ToList();
     }
     
@@ -59,14 +60,12 @@ public class GerminationLogRepository: IGerminationLogRepository
     {
         await using var connection = new MySqlConnection(_connectionString);
         await connection.ExecuteAsync("INSERT INTO registrogerminacion" +
-                                                   "(temperaturaAmbiente, humedadAmbiente, numeroZurcosGerminados, broteAlturaMaxima, broteAlturaMinima, numeroMortandad, observaciones, hojasAlturaMinima, hojasAlturaMaxima, linea, fechaRegistro, cultivoId) " +
+                                                   "(registroGerminacionId, temperaturaAmbiente, humedadAmbiente, numeroZurcosGerminados, broteAlturaMaxima, broteAlturaMinima, numeroMortandad, observaciones, hojasAlturaMinima, hojasAlturaMaxima, linea, fechaRegistro, cultivoId) " +
                                                    "VALUES " +
-                                                   "(@temperaturaAmbiente, @humedadAmbiente, @numeroZurcosGerminados, @broteAlturaMaxima, @broteAlturaMinima, @numeroMortandad, @observaciones, @hojasAlturaMinima, @hojasAlturaMaxima, @linea, @fechaRegistro, @cultivoId)"
+                                                   "(@registroGerminacionId, @temperaturaAmbiente, @humedadAmbiente, @numeroZurcosGerminados, @broteAlturaMaxima, @broteAlturaMinima, @numeroMortandad, @observaciones, @hojasAlturaMinima, @hojasAlturaMaxima, @linea, @fechaRegistro, @cultivoId)"
                                                     , germinationLog);
         
-        var lastId = await connection.QueryFirstOrDefaultAsync<int>("SELECT LAST_INSERT_ID()");
-        
-        return await connection.QueryFirstOrDefaultAsync<GerminationLog>(SqlGetGerminationLogById, new { RegistroGerminacionId = lastId });
+        return await connection.QueryFirstOrDefaultAsync<GerminationLog>(SqlGetGerminationLogById, new { germinationLog.RegistroGerminacionId });
     }
     
     public async Task<GerminationLog> UpdateGerminationLog(GerminationLog germinationLog)

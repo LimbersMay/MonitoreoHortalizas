@@ -1,5 +1,5 @@
 using Dapper;
-using GestionHortalizasApp.entities;
+using MonitoreoHortalizasApp.entities;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
@@ -30,7 +30,7 @@ public class TemperatureRepository: ITemperatureRepository
     public async Task<int> AddReading(Temperature temperature)
     {
         await using var connection = new MySqlConnection(_connectionString);
-        var result = await connection.ExecuteAsync("INSERT INTO temperatura (temperatura, humedad, fecha, hora) VALUES (@temperatura, @humedad, @fecha, @hora)", temperature);
+        var result = await connection.ExecuteAsync("INSERT INTO temperatura (idTemperatura, temperatura, humedad, fecha, hora) VALUES (@idTemperatura, @temperatura, @humedad, @fecha, @hora)", temperature);
         return result;
     }
 }

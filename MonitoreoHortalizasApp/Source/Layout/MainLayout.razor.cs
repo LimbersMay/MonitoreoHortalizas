@@ -1,4 +1,5 @@
-﻿using GestionHortalizasApp.entities;
+﻿using AutoMapper;
+using MonitoreoHortalizasApp.entities;
 using MonitoreoHortalizasApp.Events.Errors;
 using MonitoreoHortalizasApp.Events.Sensors;
 using MonitoreoHortalizasApp.Events.Serial;
@@ -6,6 +7,7 @@ using MonitoreoHortalizasApp.models;
 using MonitoreoHortalizasApp.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using MonitoreoHortalizasApp.Entities;
 using MonitoreoHortalizasApp.Services;
 using MonitoreoHortalizasApp.services.Events;
 
@@ -17,12 +19,15 @@ public partial class MainLayout
     [Inject] private IEventAggregator EventAggregator { get; set; } = default!;
     [Inject] private IJsonParser JsonParser { get; set; } = default!;
     [Inject] private ILogger<Runner> Logger { get; set; } = default!;
+    [Inject] private IMapper Mapper { get; set; } = default!;
     
     // Repositories
     [Inject] private IBedRepository BedRepository { get; set; } = default!;
     [Inject] private ITemperatureRepository TemperatureRepository { get; set; } = default!;
     [Inject] private IBarometricRepository BarometricRepository { get; set; } = default!;
     [Inject] private IValveRepository ValveRepository { get; set; } = default!;
+    
+    [Inject] private IGenerateIdService GenerateIdService { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -91,7 +96,8 @@ public partial class MainLayout
                 }
         
                 var temperatureReading = temperatureReadingResult.Value;
-                
+
+                temperatureReading.idTemperatura = GenerateIdService.GenerateId();
                 temperatureReading.Fecha = currentDate;
                 temperatureReading.Hora = currentTime;
                 
@@ -112,6 +118,7 @@ public partial class MainLayout
         
                 var barometricPressureReading = barometricPressureReadingResult.Value;
 
+                barometricPressureReading.idPresionBarometrica = GenerateIdService.GenerateId();
                 barometricPressureReading.Fecha = currentDate;
                 barometricPressureReading.Hora = currentTime;
 
@@ -132,8 +139,9 @@ public partial class MainLayout
         
                 var waterFlowReadingModel = valveReadingResult.Value;
 
-                var waterFlowReading = new Valve
+                var waterFlowReading = new AutomaticWatering
                 {
+                    IdValvula = GenerateIdService.GenerateId(),
                     Volumen = waterFlowReadingModel.Volumen,
                     CultivoId = waterFlowReadingModel.CultivoId,
                     NombreSembrado = waterFlowReadingModel.NombreSembrado,
@@ -173,7 +181,9 @@ public partial class MainLayout
                 switch (deserializeData["NumeroCama"].ToString())
                 {
                     case "1":
-                        await BedRepository.AddBed1HumidityLog(bedHumidity);
+                        var bed1 = Mapper.Map<Bed1>(bedHumidity);
+                        bed1.idCama1 = GenerateIdService.GenerateId();
+                        await BedRepository.AddBed1HumidityLog(bed1);
                         EventAggregator.Publish(new HumidityEvent
                         {
                             BedNumber = "1",
@@ -181,7 +191,9 @@ public partial class MainLayout
                         });
                         break;
                     case "2":
-                        await BedRepository.AddBed2HumidityLog(bedHumidity);
+                        var bed2 = Mapper.Map<Bed2>(bedHumidity);
+                        bed2.idCama2 = GenerateIdService.GenerateId();
+                        await BedRepository.AddBed2HumidityLog(bed2);
                         EventAggregator.Publish(new HumidityEvent
                         {
                             BedNumber = "2",
@@ -189,7 +201,9 @@ public partial class MainLayout
                         });
                         break;
                     case "3":
-                        await BedRepository.AddBed3HumidityLog(bedHumidity);
+                        var bed3 = Mapper.Map<Bed3>(bedHumidity);
+                        bed3.idCama3 = GenerateIdService.GenerateId();
+                        await BedRepository.AddBed3HumidityLog(bed3);
                         EventAggregator.Publish(new HumidityEvent
                         {
                             BedNumber = "3",
@@ -197,7 +211,9 @@ public partial class MainLayout
                         });
                         break;
                     case "4":
-                        await BedRepository.AddBed4HumidityLog(bedHumidity);
+                        var bed4 = Mapper.Map<Bed4>(bedHumidity);
+                        bed4.idCama4 = GenerateIdService.GenerateId();
+                        await BedRepository.AddBed4HumidityLog(bed4);
                         EventAggregator.Publish(new HumidityEvent
                         {
                             BedNumber = "4",
@@ -213,7 +229,6 @@ public partial class MainLayout
                 EventAggregator.Publish(new ErrorOccurredEvent { ErrorMessage = message });
                 break;
         }
-        
     }
     
     private async void OnReceiveManualFlowEvent(ManualFlowEvent @event)
@@ -229,8 +244,9 @@ public partial class MainLayout
         
         var waterFlowReadingModel = valveReadingResult.Value;
 
-        var waterFlowReading = new Valve()
+        var waterFlowReading = new ManualWatering
         {
+            IdRiegoManual = GenerateIdService.GenerateId(),
             Volumen = waterFlowReadingModel.Volumen,
             CultivoId = waterFlowReadingModel.CultivoId,
             NombreSembrado = waterFlowReadingModel.NombreSembrado,

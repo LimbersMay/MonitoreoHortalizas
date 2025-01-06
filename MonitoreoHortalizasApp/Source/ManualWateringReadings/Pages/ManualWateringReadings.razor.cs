@@ -1,6 +1,7 @@
-﻿using GestionHortalizasApp.entities;
+﻿using MonitoreoHortalizasApp.entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using MonitoreoHortalizasApp.Entities;
 using MonitoreoHortalizasApp.Events.Errors;
 using MonitoreoHortalizasApp.Events.Sensors;
 using MonitoreoHortalizasApp.models;
@@ -15,9 +16,10 @@ public partial class ManualWateringReadings : ComponentBase, IDisposable
 {
     protected List<Valve> Valves { get; } = new();
     [Inject] private IValveRepository ValveRepository { get; set; } = default!;
-    [Inject] public IEventAggregator EventAggregator { get; set; }
-    [Inject] public ILogger<Runner> Logger { get; set; }
-    [Inject] public IJsonParser JsonParser { get; set; }
+    [Inject] public IEventAggregator EventAggregator { get; set; } = default!;
+    [Inject] public ILogger<Runner> Logger { get; set; } = default!;
+    [Inject] public IJsonParser JsonParser { get; set; } = default!;
+    [Inject] public IGenerateIdService GenerateIdService { get; set; } = default!;
     
     
     // Reference to the ValveTable component
@@ -29,39 +31,18 @@ public partial class ManualWateringReadings : ComponentBase, IDisposable
 
         Valves.AddRange(await ValveRepository.GetManualWateringReadings());
         
-        EventAggregator.Subscribe<ManualFlowEvent>(OnAddNewReading);
+        EventAggregator.Subscribe<ManualWatering>(OnAddNewReading);
     }
     
-    private async void OnAddNewReading(ManualFlowEvent @event)
+    private async void OnAddNewReading(ManualWatering @event)
     {
-        var valveReadingResult = JsonParser.TryDeserialize<ValveReading>(@event.JsonString);
-
-        if(!valveReadingResult.IsSuccess)
-        {
-            Logger.LogError("Error deserializing the Valve object" + valveReadingResult.Error);
-            EventAggregator.Publish(new ErrorOccurredEvent { ErrorMessage = "Error deserializing the Valve object" });
-            return;
-        }
-        
-        var waterFlowReadingModel = valveReadingResult.Value;
-
-        var waterFlowReading = new Valve()
-        {
-            Volumen = waterFlowReadingModel.Volumen,
-            CultivoId = waterFlowReadingModel.CultivoId,
-            NombreSembrado = waterFlowReadingModel.NombreSembrado,
-            fechaEncendido = DateTime.Now.AddMilliseconds(-waterFlowReadingModel.TiempoTranscurridoMilis),
-            fechaApagado = DateTime.Now
-        };
-        
-        Valves.Add(waterFlowReading);
-        await ValveRepository.AddManualWateringReading(waterFlowReading);
+        Valves.Add(@event);
         await ValveTable.Refresh();
     }
     
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        EventAggregator.Unsubscribe<ManualFlowEvent>(OnAddNewReading);
+        EventAggregator.Unsubscribe<ManualWatering>(OnAddNewReading);
     }
 }

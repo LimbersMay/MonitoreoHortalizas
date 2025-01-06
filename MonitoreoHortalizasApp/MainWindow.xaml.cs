@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
-using GestionHortalizasApp.entities;
-using Microsoft.AspNetCore.Components.WebView.Wpf;
 using Microsoft.Extensions.Logging;
-using MonitoreoHortalizasApp.Services;
 
 namespace MonitoreoHortalizasApp
 {

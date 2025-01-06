@@ -1,4 +1,4 @@
-namespace GestionHortalizasApp.entities;
+namespace MonitoreoHortalizasApp.entities;
 
 public class Valve
 {
@@ -6,7 +6,7 @@ public class Valve
     public DateTime fechaApagado { get; set; }
     public Decimal Volumen { get; set; }
     public string NombreSembrado { get; set; }
-    public int CultivoId { get; set; }
+    public string CultivoId { get; set; }
     
     // Calculated properties
     public DateOnly SoloFecha => DateOnly.FromDateTime(fechaEncendido);

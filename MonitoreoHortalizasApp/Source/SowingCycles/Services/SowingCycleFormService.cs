@@ -11,6 +11,8 @@ public class SowingCycleFormService
     public Sowing? Sowing { get; set; }
     public GerminationLog? GerminationLog { get; set; }
     
+    public SowingLine? SowingLine { get; set; }
+    
     public void ResetSowingCycle()
     {
         SowingCycle = null;
@@ -24,5 +26,10 @@ public class SowingCycleFormService
     public void ResetGerminationLogParameter()
     {
         GerminationLog = null;
+    }
+    
+    public void ResetSowingLineParameter()
+    {
+        SowingLine = null;
     }
 }
